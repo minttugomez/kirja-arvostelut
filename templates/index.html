@@ -2,11 +2,34 @@
 <html>
 
 <head>
-  <title>Index</title>
+  <title>Login</title>
 </head>
 
 <body>
-  <p>Welcome to Book Reviews</p>
+  <h1>Welcome to Book Reviews</h1>
+  {% if session.username %}
+  <p>
+    You have logged in as {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Log out</a>
+  </p>
+  {% else %}
+  <h2>Log in</h2>
+  <form action="/login" method="post">
+    <p>
+      Username: <br />
+      <input type="text" name="username" />
+    </p>
+    <p>
+      Password: <br />
+      <input type="password" name="password" />
+    </p>
+    <input type="submit" value="Log in" />
+  </form>
+  <p>Do you not have an account? </p>
+  <a href="/register">Create account</a>
+  {% endif %}
 </body>
 
 </html>

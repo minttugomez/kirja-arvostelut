@@ -9,3 +9,20 @@
 - [ ] Sovelluksessa on käyttäjäsivu, joka näyttää tilastoja ja käyttäjän lisäämät kirja-arvostelut
 - [ ] Käyttäjä pystyy valitsemaan kirja-arvostelulle yhden tai useamman luokittelun
 - [ ] Käyttäjä pystyy kommentoimaan kirja-arvosteluja
+
+## Sovelluksen asennus
+
+1. Asenna `flask`-kirjasto:
+```bash
+$ pip install flask
+```
+
+2. Luo tietokannan taulut:
+```bash
+$ sqlite3 database.db < sql/schema.sql
+```
+
+3. Sovelluksen käynnistys:
+```bash
+$ flask run
+```

@@ -2,7 +2,7 @@
 
 ## Sovelluksen toiminnot
 
-- [ ] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
+- [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
 - [ ] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan kirja-arvosteluja
 - [ ] Käyttäjä näkee sovellukseen lisätyt kirja-arvostelut
 - [ ] Käyttäjä pystyy etsimään kirja-arvosteluja hakusanalla

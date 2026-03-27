@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from repositories.user_repository import create_user, get_password_hash, get_user_id
 import db
 import config
 
@@ -15,7 +16,7 @@ def index():
 def register():
     return render_template("register.html")
 
-@app.route("/create_account", methods=["POST"])
+@app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
     password1 = request.form["password1"]
@@ -25,8 +26,7 @@ def create():
     password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        create_user(username, password_hash)
     except sqlite3.IntegrityError:
         return "ERROR: username not available"
 
@@ -37,8 +37,7 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    sql = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
+    password_hash = get_password_hash(username)
 
     if check_password_hash(password_hash, password):
         session["username"] = username

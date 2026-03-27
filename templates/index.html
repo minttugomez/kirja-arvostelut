@@ -6,6 +6,12 @@
 </head>
 
 <body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
   <h1>Welcome to Book Reviews</h1>
   {% if session.username %}
   <p>

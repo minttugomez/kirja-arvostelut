@@ -6,6 +6,12 @@
 </head>
 
 <body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
   <h1>Create an account</h1>
   <form action="/create" method="post">
     <p>
@@ -17,7 +23,7 @@
       <input type="password" name="password1" />
     </p>
     <p>
-      Password again: <br />
+      Repeat password: <br />
       <input type="password" name="password2" />
     </p>
     <input type="submit" value="Create account" />

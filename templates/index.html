@@ -13,6 +13,7 @@
   {% endfor %}
 
   <h1>Welcome to Book Reviews</h1>
+
   {% if session.username %}
   <p>
     You have logged in as {{ session.username }}
@@ -20,6 +21,15 @@
   <p>
     <a href="/logout">Log out</a>
   </p>
+
+  <h2>Book reviews</h2>
+  {% for book_review in book_reviews %}
+  <h3>{{ book_review['title'] }} - {{ book_review['author'] }}</h3>
+  <p>
+    {{ book_reviews['review'] }}
+  </p>
+  {% endfor %}
+
   {% else %}
   <h2>Log in</h2>
   <form action="/login" method="post">

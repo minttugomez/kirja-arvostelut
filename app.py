@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, redirect, render_template, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from repositories.user_repository import create_user, get_password_hash, get_user_id
+from repositories.review_repository import get_all_reviews
 import config
 
 app = Flask(__name__)
@@ -9,7 +10,8 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    book_reviews = get_all_reviews() or []
+    return render_template("index.html", book_reviews=book_reviews)
 
 @app.route("/register")
 def register():

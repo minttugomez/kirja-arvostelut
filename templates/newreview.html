@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>New Review</title>
+</head>
+
+<body>
+    {% for message in get_flashed_messages() %}
+    <div class="info">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    <h1>New Review</h1>
+    <form action="/add" method="POST">
+        <label>Title:</label><br>
+        <input type="text" name="title" required><br>
+        <label>Author:</label><br>
+        <input type="text" name="author" required><br>
+        <label>Review:</label><br>
+        <textarea name="review" required></textarea><br>
+        <button type="submit">Add Review</button>
+    </form>
+</body>
+
+</html>

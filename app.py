@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, redirect, render_template, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from repositories.user_repository import create_user, get_password_hash, get_user_id
-from repositories.review_repository import get_all_reviews
+from repositories.review_repository import get_all_reviews, add_review
 import config
 
 app = Flask(__name__)
@@ -16,6 +16,12 @@ def index():
 @app.route("/register")
 def register():
     return render_template("register.html")
+
+@app.route("/newreview")
+def newreview():
+    if "username" not in session:
+        return redirect("/")
+    return render_template("newreview.html")
 
 @app.route("/create", methods=["POST"])
 def create():
@@ -42,6 +48,24 @@ def create():
     flash("Account created")
     return redirect("/")
 
+@app.route("/add", methods=["POST"])
+def add():
+    if "username" not in session:
+        return redirect("/")
+
+    user_id = get_user_id(session["username"])
+
+    title = request.form["title"]
+    author = request.form["author"]
+    review = request.form["review"]
+
+    try:
+        add_review(user_id, title, author, review)
+        flash("Review added successfully!")
+        return redirect("/")
+    except sqlite3.DatabaseError:
+        flash("ERROR: Something went wrong. Review not added")
+
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form["username"]
@@ -58,5 +82,6 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["username"]
-    return redirect("/")
+    if "username" in session:
+        del session["username"]
+        return redirect("/")

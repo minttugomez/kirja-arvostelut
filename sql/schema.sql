@@ -9,5 +9,5 @@ CREATE TABLE bookreviews (
     user_id INTEGER NOT NULL REFERENCES users(id),
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    review TEXT
+    review TEXT NOT NULL
 )

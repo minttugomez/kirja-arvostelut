@@ -1,5 +1,7 @@
 # Kirja-arvostelut
 
+Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan omia kirja-arvosteluitaan ja sen lisäksi lukemaan vapaasti muiden kirjoittamia arvosteluita.
+
 ## Sovelluksen toiminnot
 
 - [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen

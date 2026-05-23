@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Your Page</title>
+</head>
+
+<body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+  <p>
+    <a href="/">Back to main page</a>
+  </p>
+  <h1>Your Page</h1>
+  <p>
+    You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>
+    <br />
+    <a href="/newreview">New Review</a> <br />
+  </p>
+  <h2>Your Reviews</h2>
+  {% for book_review in book_reviews %}
+    {% if book_review['username'] == session.username %}
+      <h3>{{ book_review['title'] }} ({{ book_review['author'] }})</h3>
+      <p>{{ book_review['review'] }}</p>
+    {% endif %}
+  {% endfor %}
+</body>
+
+</html>

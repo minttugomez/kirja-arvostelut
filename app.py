@@ -23,6 +23,13 @@ def newreview():
         return redirect("/")
     return render_template("newreview.html")
 
+@app.route("/yourpage")
+def yourpage():
+    if "username" not in session:
+        return redirect("/")
+    book_reviews = get_all_reviews() or []
+    return render_template("yourpage.html", book_reviews=book_reviews)
+
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
@@ -62,7 +69,7 @@ def add():
     try:
         add_review(user_id, title, author, review)
         flash("Review added successfully!")
-        return redirect("/")
+        return redirect("/yourpage")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
 

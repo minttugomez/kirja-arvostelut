@@ -16,11 +16,9 @@
 
   {% if session.username %}
   <p>
-    You have logged in as {{ session.username }}
-  </p>
-  <p>
-    <a href="/logout">Log out</a> <br/>
-    <a href="/newreview">New Review</a>
+    You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>
+    <br />
+    <a href="/yourpage">Your page</a> <br />
   </p>
 
   <h1>Book Reviews</h1>

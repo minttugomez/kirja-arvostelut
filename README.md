@@ -5,7 +5,7 @@ Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pysty
 ## Sovelluksen toiminnot
 
 - [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
-- [ ] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan kirja-arvosteluja
+- [x] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan kirja-arvosteluja
 - [x] Käyttäjä näkee sovellukseen lisätyt kirja-arvostelut
 - [ ] Käyttäjä pystyy etsimään kirja-arvosteluja hakusanalla
 - [ ] Sovelluksessa on käyttäjäsivu, joka näyttää tilastoja ja käyttäjän lisäämät kirja-arvostelut

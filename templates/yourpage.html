@@ -27,7 +27,8 @@
     {% if book_review['username'] == session.username %}
       <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
       <p>{{ book_review['review'] }}</p>
-      <a href="/edit/{{ book_review['id'] }}">Edit</a> <br />
+      <a href="/edit/{{ book_review['id'] }}">Edit</a>
+      <a href="/confirmdelete/{{ book_review['id'] }}">Delete</a>
     {% endif %}
   {% endfor %}
 </body>

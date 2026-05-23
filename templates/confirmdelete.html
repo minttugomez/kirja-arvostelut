@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Delete</title>
+</head>
+
+<body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
+  <h1>Are you sure to delete review {{ book_review[0]['title'] }}?</h1>
+  <form action="/delete/{{ book_review[0]['id'] }}" method="post">
+    <button type="submit">Yes</button>
+    <button type="button" onclick="window.location='/yourpage';">No</button>
+  </form>
+</body>
+
+</html>

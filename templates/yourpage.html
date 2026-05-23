@@ -18,13 +18,16 @@
   <p>
     You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>
     <br />
+    <br />
     <a href="/newreview">New Review</a> <br />
+    <br />
   </p>
-  <h2>Your Reviews</h2>
+  <h1>Your Reviews</h1>
   {% for book_review in book_reviews %}
     {% if book_review['username'] == session.username %}
-      <h3>{{ book_review['title'] }} ({{ book_review['author'] }})</h3>
+      <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
       <p>{{ book_review['review'] }}</p>
+      <a href="/edit/{{ book_review['id'] }}">Edit</a> <br />
     {% endif %}
   {% endfor %}
 </body>

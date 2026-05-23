@@ -19,13 +19,15 @@
     You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>
     <br />
     <a href="/yourpage">Your page</a> <br />
+    <br />
   </p>
 
   <h1>Book Reviews</h1>
   {% for book_review in book_reviews %}
   <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
   <p>{{ book_review['review'] }}</p>
-  <p>-{{ book_review['username'] }}</p>
+  <p>- {{ book_review['username'] }}</p>
+  <br />
   {% endfor %}
 
   {% else %}

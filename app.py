@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, redirect, render_template, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from repositories.user_repository import create_user, get_password_hash, get_user_id
-from repositories.review_repository import get_all_reviews, add_review
+from repositories.review_repository import get_all_reviews, get_review_by_id, add_review, update_review
 import config
 
 app = Flask(__name__)
@@ -29,6 +29,16 @@ def yourpage():
         return redirect("/")
     book_reviews = get_all_reviews() or []
     return render_template("yourpage.html", book_reviews=book_reviews)
+
+@app.route("/edit/<int:review_id>")
+def edit(review_id):
+    book_review = get_review_by_id(review_id)
+    if "username" not in session:
+        return redirect("/")
+    if not book_review:
+        flash("Review not found")
+        return redirect("/yourpage")
+    return render_template("editreview.html", book_review=book_review)
 
 @app.route("/create", methods=["POST"])
 def create():
@@ -72,6 +82,23 @@ def add():
         return redirect("/yourpage")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
+
+@app.route("/update/<int:review_id>", methods=["POST"])
+def update(review_id):
+    if "username" not in session:
+        return redirect("/")
+
+    id = review_id
+    title = request.form['title']
+    author = request.form['author']
+    review = request.form['review']
+
+    try:
+        update_review(id, title, author, review)
+        flash("Review updated successfully!")
+        return redirect("/yourpage")
+    except sqlite3.DatabaseError:
+        flash("ERROR: Something went wrong. Review not updated")
 
 @app.route("/login", methods=["POST"])
 def login():

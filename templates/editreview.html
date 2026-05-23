@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit Review</title>
+</head>
+
+<body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
+  <h1>Edit Review</h1>
+  <form action="/update/{{ book_review[0]['id'] }}" method="POST">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" value="{{ book_review[0]['title'] }}" required><br>
+    <label for="author">Author:</label><br>
+    <input type="text" id="author" name="author" value="{{ book_review[0]['author'] }}" required><br>
+    <label for="review">Review:</label><br>
+    <textarea id="review" name="review" required>{{ book_review[0]['review'] }}</textarea><br>
+    <button type="submit">Update Review</button>
+  </form>
+  <br/><a href="/yourpage">Cancel</a>
+
+</body>
+
+</html>

@@ -23,6 +23,17 @@
   </p>
 
   <h1>Book Reviews</h1>
+  <form action="/" method="get">
+    <p>
+      Query:
+      {% if query %}
+      <input type="text" name="query" value="{{ query }}" />
+      {% else %}
+      <input type="text" name="query" />
+      {% endif %}
+    </p>
+    <input type="submit" value="Search" />
+  </form>
   {% for book_review in book_reviews %}
   <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
   <p>{{ book_review['review'] }}</p>

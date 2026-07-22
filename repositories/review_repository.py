@@ -7,6 +7,15 @@ def get_all_reviews():
     JOIN users ON bookreviews.user_id = users.id"""
     return db.query(sql)
 
+def search(query):
+    sql = """
+    SELECT bookreviews.*, users.username
+    FROM bookreviews
+    JOIN users ON bookreviews.user_id = users.id
+    WHERE title LIKE ? OR author LIKE ?"""
+    queryphrase = "%" + query + "%"
+    return db.query(sql, [queryphrase, queryphrase])
+
 def get_review_by_id(review_id):
     sql = """
     SELECT bookreviews.*, users.username

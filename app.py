@@ -19,6 +19,10 @@ def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
+@app.errorhandler(403)
+def forbidden(error):
+    return redirect("/")
+
 @app.route("/")
 def index():
     query = request.args.get("query")

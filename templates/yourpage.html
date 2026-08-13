@@ -1,36 +1,35 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Your Page</title>
-</head>
+{% block title %}Your Page{% endblock %}
 
-<body>
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
+{% block content %}
+
+<h2>Your Reviews</h2>
+
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<p class="{{ category }}">
+  {{ message }}
+</p>
+{% endfor %}
+
+<p>
+  <a href="/newreview">New review</a>
+</p>
+
+{% for book_review in book_reviews %}
+<div class="review">
   <p>
-    <a href="/">Back to main page</a>
+    <strong>Book:</strong> {{ book_review.title }}<br />
+    <strong>Author:</strong> {{ book_review.author }}
   </p>
-  <h1>Your Page</h1>
   <p>
-    You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>
-    <br />
-    <br />
-    <a href="/newreview">New Review</a> <br />
-    <br />
+    {{ book_review.review }}
   </p>
-  <h1>Your Reviews</h1>
-  {% for book_review in book_reviews %}
-    {% if book_review['username'] == session.username %}
-      <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
-      <p>{{ book_review['review'] }}</p>
-      <a href="/edit/{{ book_review['id'] }}">Edit</a>
-      <a href="/confirmdelete/{{ book_review['id'] }}">Delete</a>
-    {% endif %}
-  {% endfor %}
-</body>
+  <p>
+    <a href="/edit/{{ book_review.id }}">Edit</a>
+    <a href="/confirmdelete/{{ book_review.id }}">Delete</a>
+  </p>
+</div>
+{% endfor %}
 
-</html>
+{% endblock %}

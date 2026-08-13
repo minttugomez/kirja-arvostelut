@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Book Reviews</h1>
+  </div>
+
+  <div class="nav">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        {% if session.user_id %}
+        <li><a href="/yourpage">Your page</a></li>
+        <li><a href="/newreview">New review</a></li>
+        <li><a href="/logout">Log out</a></li>
+        {% else %}
+        <li><a href="/register">Create account</a></li>
+        <li><a href="/login">Log in</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  {% if session.username %}
+  <p class="status">
+    Logged in as {{ session.username }}
+  </p>
+  {% endif %}
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+
+</html>

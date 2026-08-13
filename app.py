@@ -1,144 +1,172 @@
+import secrets
 import sqlite3
-from flask import Flask, redirect, render_template, request, session, flash
-from werkzeug.security import generate_password_hash, check_password_hash
-from repositories.user_repository import create_user, get_password_hash, get_user_id
-from repositories.review_repository import get_all_reviews, get_review_by_id, add_review, update_review, delete_review, search
+from flask import Flask, abort, flash, redirect, render_template, request, session
+from repositories.user_repository import create_user, check_login
+from repositories.review_repository import (
+    get_all_reviews, get_reviews_by_user, get_review_by_id,
+    add_review, update_review, delete_review, search
+)
 import config
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+
 @app.route("/")
 def index():
     query = request.args.get("query")
-    book_reviews = search(query) if query else get_all_reviews() or []
+    book_reviews = search(query) if query else get_all_reviews()
     return render_template("index.html", query=query, book_reviews=book_reviews)
 
 @app.route("/register")
 def register():
     return render_template("register.html")
 
-@app.route("/newreview")
-def newreview():
-    if "username" not in session:
-        return redirect("/")
-    return render_template("newreview.html")
-
-@app.route("/yourpage")
-def yourpage():
-    if "username" not in session:
-        return redirect("/")
-    book_reviews = get_all_reviews() or []
-    return render_template("yourpage.html", book_reviews=book_reviews)
-
-@app.route("/edit/<int:review_id>")
-def edit(review_id):
-    book_review = get_review_by_id(review_id)
-    if "username" not in session:
-        return redirect("/")
-    if not book_review:
-        flash("Review not found")
-        return redirect("/yourpage")
-    return render_template("editreview.html", book_review=book_review)
-
-@app.route("/confirmdelete/<int:review_id>")
-def confirmdelete(review_id):
-    book_review = get_review_by_id(review_id)
-    if "username" not in session:
-        return redirect("/")
-    if not book_review:
-        flash("Review not found")
-        return redirect("/yourpage")
-    return render_template("confirmdelete.html", book_review=book_review)
-
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
-    if len(username) < 3:
-        flash("ERROR: username must be at least 3 characters")
+    if len(username) < 3 or len(username) > 50:
+        flash("ERROR: username must be between 3 and 50 characters", "error")
         return redirect("/register")
-    if len(password1) <8:
-        flash("ERROR: password must be at least 8 characters")
+    if len(password1) < 8 or len(password1) > 100:
+        flash("ERROR: password must be between 8 and 100 characters", "error")
         return redirect("/register")
     if password1 != password2:
-        flash("ERROR: passwords do not match")
+        flash("ERROR: passwords do not match", "error")
         return redirect("/register")
-    password_hash = generate_password_hash(password1)
 
     try:
-        create_user(username, password_hash)
+        create_user(username, password1)
     except sqlite3.IntegrityError:
-        flash("ERROR: username not available")
+        flash("ERROR: username not available", "error")
         return redirect("/register")
 
-    flash("Account created")
+    flash("Account created", "success")
+    return redirect("/login")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    username = request.form["username"]
+    password = request.form["password"]
+
+    user_id = check_login(username, password)
+    if user_id:
+        session["user_id"] = user_id
+        session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
+        return redirect("/")
+    else:
+        flash("ERROR: incorrect username or password", "error")
+        return redirect("/login")
+
+@app.route("/logout")
+def logout():
+    require_login()
+    del session["user_id"]
+    del session["username"]
+    del session["csrf_token"]
     return redirect("/")
+
+@app.route("/newreview")
+def newreview():
+    require_login()
+    return render_template("newreview.html")
 
 @app.route("/add", methods=["POST"])
 def add():
-    if "username" not in session:
-        return redirect("/")
-
-    user_id = get_user_id(session["username"])
+    require_login()
+    check_csrf()
 
     title = request.form["title"]
     author = request.form["author"]
     review = request.form["review"]
+    if not title or len(title) > 100:
+        abort(403)
+    if not author or len(author) > 100:
+        abort(403)
+    if not review or len(review) > 5000:
+        abort(403)
 
-    try:
-        add_review(user_id, title, author, review)
-        flash("Review added successfully!")
-        return redirect("/yourpage")
-    except sqlite3.DatabaseError:
-        flash("ERROR: Something went wrong. Review not added")
+    add_review(session["user_id"], title, author, review)
+    flash("Review added successfully!", "success")
+    return redirect("/yourpage")
+
+@app.route("/yourpage")
+def yourpage():
+    require_login()
+    book_reviews = get_reviews_by_user(session["user_id"])
+    return render_template("yourpage.html", book_reviews=book_reviews)
+
+@app.route("/edit/<int:review_id>")
+def edit(review_id):
+    require_login()
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review["user_id"] != session["user_id"]:
+        abort(403)
+    return render_template("editreview.html", book_review=book_review)
 
 @app.route("/update/<int:review_id>", methods=["POST"])
 def update(review_id):
-    if "username" not in session:
-        return redirect("/")
+    require_login()
+    check_csrf()
 
-    title = request.form['title']
-    author = request.form['author']
-    review = request.form['review']
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review["user_id"] != session["user_id"]:
+        abort(403)
 
-    try:
-        update_review(review_id, title, author, review)
-        flash("Review updated successfully!")
-        return redirect("/yourpage")
-    except sqlite3.DatabaseError:
-        flash("ERROR: Something went wrong. Review not updated")
+    title = request.form["title"]
+    author = request.form["author"]
+    review = request.form["review"]
+    if not title or len(title) > 100:
+        abort(403)
+    if not author or len(author) > 100:
+        abort(403)
+    if not review or len(review) > 5000:
+        abort(403)
+
+    update_review(review_id, title, author, review)
+    flash("Review updated successfully!", "success")
+    return redirect("/yourpage")
+
+@app.route("/confirmdelete/<int:review_id>")
+def confirmdelete(review_id):
+    require_login()
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review["user_id"] != session["user_id"]:
+        abort(403)
+    return render_template("confirmdelete.html", book_review=book_review)
 
 @app.route("/delete/<int:review_id>", methods=["POST"])
 def delete(review_id):
-    if "username" not in session:
-        return redirect("/")
+    require_login()
+    check_csrf()
 
-    try:
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review["user_id"] != session["user_id"]:
+        abort(403)
+
+    if "continue" in request.form:
         delete_review(review_id)
-        flash("Review deleted successfully!")
-        return redirect("/yourpage")
-    except sqlite3.DatabaseError:
-        flash("ERROR: Something went wrong. Review not deleted")
+        flash("Review deleted successfully!", "success")
 
-
-@app.route("/login", methods=["POST"])
-def login():
-    username = request.form["username"]
-    password = request.form["password"]
-
-    password_hash = get_password_hash(username)
-
-    if password_hash and check_password_hash(password_hash, password):
-        session["username"] = username
-        return redirect("/")
-    else:
-        flash("ERROR: incorrect username or password")
-        return redirect("/")
-
-@app.route("/logout")
-def logout():
-    if "username" in session:
-        del session["username"]
-        return redirect("/")
+    return redirect("/yourpage")

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+
+<h2>Log in</h2>
+
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<p class="{{ category }}">
+  {{ message }}
+</p>
+{% endfor %}
+
+<form action="/login" method="post">
+  <p>
+    <label for="username">Username:</label><br />
+    <input type="text" id="username" name="username" />
+  </p>
+  <p>
+    <label for="password">Password:</label><br />
+    <input type="password" id="password" name="password" />
+  </p>
+  <input type="submit" value="Log in" />
+</form>
+
+<p>
+  Don't have an account? <a href="/register">Create one</a>
+</p>
+
+{% endblock %}

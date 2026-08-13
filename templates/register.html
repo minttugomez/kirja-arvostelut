@@ -1,35 +1,35 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Register</title>
-</head>
+{% block title %}Create account{% endblock %}
 
-<body>
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
+{% block content %}
 
-  <h1>Create an account</h1>
-  <form action="/create" method="post">
-    <p>
-      Username: <br />
-      <input type="text" name="username" />
-    </p>
-    <p>
-      Password: <br />
-      <input type="password" name="password1" />
-    </p>
-    <p>
-      Repeat password: <br />
-      <input type="password" name="password2" />
-    </p>
-    <input type="submit" value="Create account" />
-  </form>
+<h2>Create an account</h2>
 
-  <br/><a href="/">Back to login</a>
-</body>
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<p class="{{ category }}">
+  {{ message }}
+</p>
+{% endfor %}
 
-</html>
+<form action="/create" method="post">
+  <p>
+    <label for="username">Username:</label><br />
+    <input type="text" id="username" name="username" />
+  </p>
+  <p>
+    <label for="password1">Password:</label><br />
+    <input type="password" id="password1" name="password1" />
+  </p>
+  <p>
+    <label for="password2">Repeat password:</label><br />
+    <input type="password" id="password2" name="password2" />
+  </p>
+  <input type="submit" value="Create account" />
+</form>
+
+<p>
+  <a href="/login">Back to log in</a>
+</p>
+
+{% endblock %}

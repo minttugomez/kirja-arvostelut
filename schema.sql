@@ -10,4 +10,4 @@ CREATE TABLE book_reviews (
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     review TEXT NOT NULL
-)
+);

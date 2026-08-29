@@ -4,7 +4,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import config
-from repositories.review_repository import (
+from reviews import (
     add_review,
     delete_review,
     get_all_reviews,
@@ -12,7 +12,7 @@ from repositories.review_repository import (
     search,
     update_review,
 )
-from repositories.user_repository import create_user, get_password_hash, get_user_id
+from users import create_user, get_password_hash, get_user_id
 
 app = Flask(__name__)
 app.secret_key = config.secret_key

@@ -1,16 +1,27 @@
 import sqlite3
-from flask import Flask, redirect, render_template, request, session, flash
-from werkzeug.security import generate_password_hash, check_password_hash
-from repositories.user_repository import create_user, get_password_hash, get_user_id
-from repositories.review_repository import get_all_reviews, get_review_by_id, add_review, update_review, delete_review, search
+
+from flask import Flask, flash, redirect, render_template, request, session
+from werkzeug.security import check_password_hash, generate_password_hash
+
 import config
+from repositories.review_repository import (
+    add_review,
+    delete_review,
+    get_all_reviews,
+    get_review_by_id,
+    search,
+    update_review,
+)
+from repositories.user_repository import create_user, get_password_hash, get_user_id
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+
 @app.errorhandler(403)
 def forbidden(error):
     return redirect("/")
+
 
 @app.route("/")
 def index():
@@ -18,9 +29,11 @@ def index():
     book_reviews = search(query) if query else get_all_reviews() or []
     return render_template("index.html", query=query, book_reviews=book_reviews)
 
+
 @app.route("/register")
 def register():
     return render_template("register.html")
+
 
 @app.route("/new_review")
 def new_review():
@@ -28,12 +41,14 @@ def new_review():
         return redirect("/")
     return render_template("newreview.html")
 
+
 @app.route("/your_page")
 def your_page():
     if "username" not in session:
         return redirect("/")
     book_reviews = get_all_reviews() or []
     return render_template("yourpage.html", book_reviews=book_reviews)
+
 
 @app.route("/edit/<int:review_id>")
 def edit(review_id):
@@ -45,6 +60,7 @@ def edit(review_id):
         return redirect("/your_page")
     return render_template("editreview.html", book_review=book_review)
 
+
 @app.route("/confirm_delete/<int:review_id>")
 def confirm_delete(review_id):
     book_review = get_review_by_id(review_id)
@@ -55,6 +71,7 @@ def confirm_delete(review_id):
         return redirect("/your_page")
     return render_template("confirmdelete.html", book_review=book_review)
 
+
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
@@ -63,7 +80,7 @@ def create():
     if len(username) < 3:
         flash("ERROR: username must be at least 3 characters")
         return redirect("/register")
-    if len(password1) <8:
+    if len(password1) < 8:
         flash("ERROR: password must be at least 8 characters")
         return redirect("/register")
     if password1 != password2:
@@ -79,6 +96,7 @@ def create():
 
     flash("Account created")
     return redirect("/")
+
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -98,6 +116,7 @@ def add():
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
 
+
 @app.route("/update/<int:review_id>", methods=["POST"])
 def update(review_id):
     if "username" not in session:
@@ -113,6 +132,7 @@ def update(review_id):
         return redirect("/your_page")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not updated")
+
 
 @app.route("/delete/<int:review_id>", methods=["POST"])
 def delete(review_id):
@@ -140,6 +160,7 @@ def login():
     else:
         flash("ERROR: incorrect username or password")
         return redirect("/")
+
 
 @app.route("/logout")
 def logout():

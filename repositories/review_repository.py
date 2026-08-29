@@ -1,11 +1,13 @@
 import db
 
+
 def get_all_reviews():
     sql = """
     SELECT book_reviews.*, users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id"""
     return db.query(sql)
+
 
 def search(query):
     sql = """
@@ -16,6 +18,7 @@ def search(query):
     queryphrase = "%" + query + "%"
     return db.query(sql, [queryphrase, queryphrase])
 
+
 def get_review_by_id(review_id):
     sql = """
     SELECT book_reviews.*, users.username
@@ -25,11 +28,13 @@ def get_review_by_id(review_id):
     """
     return db.query(sql, [review_id])
 
+
 def add_review(user_id, title, author, review):
     sql = """
     INSERT INTO book_reviews (user_id, title, author, review)
     VALUES (?, ?, ?, ?) """
     db.execute(sql, [user_id, title, author, review])
+
 
 def update_review(review_id, title, author, review):
     sql = """
@@ -38,6 +43,7 @@ def update_review(review_id, title, author, review):
     WHERE id = ?
     """
     db.execute(sql, [title, author, review, review_id])
+
 
 def delete_review(review_id):
     sql = """

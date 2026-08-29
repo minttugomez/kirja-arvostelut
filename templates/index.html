@@ -37,7 +37,7 @@
   {% for book_review in book_reviews %}
   <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
   <p>{{ book_review['review'] }}</p>
-  <p>- {{ book_review['username'] }}</p>
+  <p>- <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a></p>
   <br />
   {% endfor %}
 

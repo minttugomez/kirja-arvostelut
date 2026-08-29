@@ -1,6 +1,6 @@
 import sqlite3
 
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, abort, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import config
@@ -9,10 +9,11 @@ from reviews import (
     delete_review,
     get_all_reviews,
     get_review_by_id,
+    get_reviews_by_user,
     search,
     update_review,
 )
-from users import create_user, get_password_hash, get_user_id
+from users import create_user, get_password_hash, get_user, get_user_id
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -46,8 +47,21 @@ def new_review():
 def your_page():
     if "username" not in session:
         return redirect("/")
-    book_reviews = get_all_reviews() or []
-    return render_template("yourpage.html", book_reviews=book_reviews)
+    return redirect(f"/user/{get_user_id(session['username'])}")
+
+
+@app.route("/user/<int:user_id>")
+def user_page(user_id):
+    if "username" not in session:
+        return redirect("/")
+    user = get_user(user_id)
+    if not user:
+        abort(404)
+    book_reviews = get_reviews_by_user(user_id) or []
+    is_owner = user["username"] == session["username"]
+    return render_template(
+        "yourpage.html", user=user, book_reviews=book_reviews, is_owner=is_owner
+    )
 
 
 @app.route("/edit/<int:review_id>")
@@ -58,6 +72,8 @@ def edit(review_id):
     if not book_review:
         flash("Review not found")
         return redirect("/your_page")
+    if book_review[0]["username"] != session["username"]:
+        abort(403)
     return render_template("editreview.html", book_review=book_review)
 
 
@@ -69,6 +85,8 @@ def confirm_delete(review_id):
     if not book_review:
         flash("Review not found")
         return redirect("/your_page")
+    if book_review[0]["username"] != session["username"]:
+        abort(403)
     return render_template("confirmdelete.html", book_review=book_review)
 
 
@@ -122,6 +140,12 @@ def update(review_id):
     if "username" not in session:
         return redirect("/")
 
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review[0]["username"] != session["username"]:
+        abort(403)
+
     title = request.form['title']
     author = request.form['author']
     review = request.form['review']
@@ -138,6 +162,12 @@ def update(review_id):
 def delete(review_id):
     if "username" not in session:
         return redirect("/")
+
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    if book_review[0]["username"] != session["username"]:
+        abort(403)
 
     try:
         delete_review(review_id)

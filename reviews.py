@@ -19,6 +19,15 @@ def search(query):
     return db.query(sql, [queryphrase, queryphrase])
 
 
+def get_reviews_by_user(user_id):
+    sql = """
+    SELECT book_reviews.*, users.username
+    FROM book_reviews
+    JOIN users ON book_reviews.user_id = users.id
+    WHERE book_reviews.user_id = ?"""
+    return db.query(sql, [user_id])
+
+
 def get_review_by_id(review_id):
     sql = """
     SELECT book_reviews.*, users.username

@@ -9,5 +9,6 @@ CREATE TABLE book_reviews (
     user_id INTEGER NOT NULL REFERENCES users(id),
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    review TEXT NOT NULL
+    review TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

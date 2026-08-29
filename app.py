@@ -10,6 +10,7 @@ from reviews import (
     get_all_reviews,
     get_review_by_id,
     get_reviews_by_user,
+    get_user_stats,
     search,
     update_review,
 )
@@ -58,9 +59,14 @@ def user_page(user_id):
     if not user:
         abort(404)
     book_reviews = get_reviews_by_user(user_id) or []
+    stats = get_user_stats(user_id)
     is_owner = user["username"] == session["username"]
     return render_template(
-        "yourpage.html", user=user, book_reviews=book_reviews, is_owner=is_owner
+        "yourpage.html",
+        user=user,
+        book_reviews=book_reviews,
+        stats=stats,
+        is_owner=is_owner,
     )
 
 

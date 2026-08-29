@@ -15,6 +15,15 @@
     <a href="/">Back to main page</a>
   </p>
   <h1>{{ user['username'] }}{% if is_owner %} (you){% endif %}</h1>
+  <p>
+    {{ user['username'] }} has written {{ stats['count'] }}
+    review{{ '' if stats['count'] == 1 else 's' }}.
+    {% if stats['count'] %}
+    <br />
+    First review written {{ stats['first_review'] }}<br />
+    Latest review written {{ stats['last_review'] }}
+    {% endif %}
+  </p>
   {% if is_owner %}
   <p>
     You are logged in as {{ session.username }}. <a href="/logout">Log out</a> <br/>

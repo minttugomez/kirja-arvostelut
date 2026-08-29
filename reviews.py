@@ -28,6 +28,16 @@ def get_reviews_by_user(user_id):
     return db.query(sql, [user_id])
 
 
+def get_user_stats(user_id):
+    sql = """
+    SELECT COUNT(*) AS count,
+           DATE(MIN(created_at)) AS first_review,
+           DATE(MAX(created_at)) AS last_review
+    FROM book_reviews
+    WHERE user_id = ?"""
+    return db.query(sql, [user_id])[0]
+
+
 def get_review_by_id(review_id):
     sql = """
     SELECT book_reviews.*, users.username
@@ -40,8 +50,8 @@ def get_review_by_id(review_id):
 
 def add_review(user_id, title, author, review):
     sql = """
-    INSERT INTO book_reviews (user_id, title, author, review)
-    VALUES (?, ?, ?, ?) """
+    INSERT INTO book_reviews (user_id, title, author, review, created_at)
+    VALUES (?, ?, ?, ?, datetime('now')) """
     db.execute(sql, [user_id, title, author, review])
 
 

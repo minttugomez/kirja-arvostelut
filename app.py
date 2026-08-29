@@ -22,14 +22,14 @@ def index():
 def register():
     return render_template("register.html")
 
-@app.route("/newreview")
-def newreview():
+@app.route("/new_review")
+def new_review():
     if "username" not in session:
         return redirect("/")
     return render_template("newreview.html")
 
-@app.route("/yourpage")
-def yourpage():
+@app.route("/your_page")
+def your_page():
     if "username" not in session:
         return redirect("/")
     book_reviews = get_all_reviews() or []
@@ -42,17 +42,17 @@ def edit(review_id):
         return redirect("/")
     if not book_review:
         flash("Review not found")
-        return redirect("/yourpage")
+        return redirect("/your_page")
     return render_template("editreview.html", book_review=book_review)
 
-@app.route("/confirmdelete/<int:review_id>")
-def confirmdelete(review_id):
+@app.route("/confirm_delete/<int:review_id>")
+def confirm_delete(review_id):
     book_review = get_review_by_id(review_id)
     if "username" not in session:
         return redirect("/")
     if not book_review:
         flash("Review not found")
-        return redirect("/yourpage")
+        return redirect("/your_page")
     return render_template("confirmdelete.html", book_review=book_review)
 
 @app.route("/create", methods=["POST"])
@@ -94,7 +94,7 @@ def add():
     try:
         add_review(user_id, title, author, review)
         flash("Review added successfully!")
-        return redirect("/yourpage")
+        return redirect("/your_page")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
 
@@ -110,7 +110,7 @@ def update(review_id):
     try:
         update_review(review_id, title, author, review)
         flash("Review updated successfully!")
-        return redirect("/yourpage")
+        return redirect("/your_page")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not updated")
 
@@ -122,7 +122,7 @@ def delete(review_id):
     try:
         delete_review(review_id)
         flash("Review deleted successfully!")
-        return redirect("/yourpage")
+        return redirect("/your_page")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not deleted")
 

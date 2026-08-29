@@ -2,38 +2,38 @@ import db
 
 def get_all_reviews():
     sql = """
-    SELECT bookreviews.*, users.username
-    FROM bookreviews
-    JOIN users ON bookreviews.user_id = users.id"""
+    SELECT book_reviews.*, users.username
+    FROM book_reviews
+    JOIN users ON book_reviews.user_id = users.id"""
     return db.query(sql)
 
 def search(query):
     sql = """
-    SELECT bookreviews.*, users.username
-    FROM bookreviews
-    JOIN users ON bookreviews.user_id = users.id
+    SELECT book_reviews.*, users.username
+    FROM book_reviews
+    JOIN users ON book_reviews.user_id = users.id
     WHERE title LIKE ? OR author LIKE ?"""
     queryphrase = "%" + query + "%"
     return db.query(sql, [queryphrase, queryphrase])
 
 def get_review_by_id(review_id):
     sql = """
-    SELECT bookreviews.*, users.username
-    FROM bookreviews
-    JOIN users ON bookreviews.user_id = users.id
-    WHERE bookreviews.id = ?
+    SELECT book_reviews.*, users.username
+    FROM book_reviews
+    JOIN users ON book_reviews.user_id = users.id
+    WHERE book_reviews.id = ?
     """
     return db.query(sql, [review_id])
 
 def add_review(user_id, title, author, review):
     sql = """
-    INSERT INTO bookreviews (user_id, title, author, review)
+    INSERT INTO book_reviews (user_id, title, author, review)
     VALUES (?, ?, ?, ?) """
     db.execute(sql, [user_id, title, author, review])
 
 def update_review(review_id, title, author, review):
     sql = """
-    UPDATE bookreviews
+    UPDATE book_reviews
     SET title = ?, author = ?, review = ?
     WHERE id = ?
     """
@@ -41,7 +41,7 @@ def update_review(review_id, title, author, review):
 
 def delete_review(review_id):
     sql = """
-    DELETE FROM bookreviews
+    DELETE FROM book_reviews
     WHERE id = ?
     """
     db.execute(sql, [review_id])

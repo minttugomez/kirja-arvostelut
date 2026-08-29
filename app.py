@@ -8,6 +8,10 @@ import config
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+@app.errorhandler(403)
+def forbidden(error):
+    return redirect("/")
+
 @app.route("/")
 def index():
     query = request.args.get("query")

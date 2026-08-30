@@ -319,9 +319,9 @@ def add():
     try:
         add_review(user_id, title, author, review, classes)
         flash("Review added successfully!")
-        return redirect(f"/user/{user_id}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
+    return redirect(f"/user/{user_id}")
 
 
 @app.route("/update/<int:review_id>", methods=["POST"])
@@ -363,9 +363,9 @@ def update(review_id):
     try:
         update_review(review_id, title, author, review, classes)
         flash("Review updated successfully!")
-        return redirect(f"/user/{book_review[0]['user_id']}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not updated")
+    return redirect(f"/user/{book_review[0]['user_id']}")
 
 
 @app.route("/delete/<int:review_id>", methods=["POST"])
@@ -383,12 +383,13 @@ def delete(review_id):
         flash("ERROR: you can only change your own reviews")
         return redirect(f"/review/{review_id}")
 
+    user_id = book_review[0]["user_id"]
     try:
         delete_review(review_id)
         flash("Review deleted successfully!")
-        return redirect(f"/user/{book_review[0]['user_id']}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not deleted")
+    return redirect(f"/user/{user_id}")
 
 
 @app.route("/login", methods=["POST"])

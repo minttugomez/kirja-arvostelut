@@ -1,3 +1,4 @@
+import re
 import secrets
 import sqlite3
 import markupsafe
@@ -80,15 +81,29 @@ def register():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     filled = {"username": username}
+
+    errors = []
     if len(username) < 3:
-        flash("ERROR: username must be at least 3 characters")
-        return render_template("register.html", filled=filled)
+        errors.append("ERROR: username must be at least 3 characters")
+    if not re.fullmatch(r"[A-Za-z0-9]+", username):
+        errors.append("ERROR: username may only contain letters and numbers")
     if len(password1) < 8:
-        flash("ERROR: password must be at least 8 characters")
-        return render_template("register.html", filled=filled)
+        errors.append("ERROR: password must be at least 8 characters")
+    if " " in password1:
+        errors.append("ERROR: password must not contain spaces")
+    if (not re.search(r"[A-Za-z]", password1)
+            or not re.search(r"[0-9]", password1)
+            or not re.search(r"[^A-Za-z0-9\s]", password1)):
+        errors.append("ERROR: password must contain at least one letter, "
+                      "one number and one special character")
     if password1 != password2:
-        flash("ERROR: passwords do not match")
+        errors.append("ERROR: passwords do not match")
+
+    if errors:
+        for error in errors:
+            flash(error)
         return render_template("register.html", filled=filled)
+
     password_hash = generate_password_hash(password1)
 
     try:

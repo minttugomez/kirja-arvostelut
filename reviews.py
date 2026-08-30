@@ -5,7 +5,8 @@ def get_all_reviews():
     sql = """
     SELECT book_reviews.*, users.username
     FROM book_reviews
-    JOIN users ON book_reviews.user_id = users.id"""
+    JOIN users ON book_reviews.user_id = users.id
+    ORDER BY book_reviews.id DESC"""
     return db.query(sql)
 
 
@@ -14,7 +15,8 @@ def search(query):
     SELECT book_reviews.*, users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
-    WHERE title LIKE ? OR author LIKE ?"""
+    WHERE title LIKE ? OR author LIKE ?
+    ORDER BY book_reviews.id DESC"""
     queryphrase = "%" + query + "%"
     return db.query(sql, [queryphrase, queryphrase])
 
@@ -24,7 +26,8 @@ def get_reviews_by_user(user_id):
     SELECT book_reviews.*, users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
-    WHERE book_reviews.user_id = ?"""
+    WHERE book_reviews.user_id = ?
+    ORDER BY book_reviews.id DESC"""
     return db.query(sql, [user_id])
 
 

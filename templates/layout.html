@@ -2,37 +2,37 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>{% block title %}Book Reviews{% endblock %}</title>
-  <link rel="stylesheet" href="/static/main.css">
+    <meta charset="UTF-8">
+    <title>{% block title %}Book Reviews{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <div class="header">
-    <a href="/">Book Reviews</a>
-  </div>
+    <div class="header">
+        <a href="/">Book Reviews</a>
+    </div>
 
-  <nav>
-    <ul>
-      <li><a href="/">{% if session.username %}Home{% else %}Log in{% endif %}</a></li>
-      {% if session.username %}
-      <li><a href="/user/{{ session.user_id }}">Your page</a></li>
-      <li><a href="/new_review">Add review</a></li>
-      <li>Logged in as {{ session.username }}</li>
-      <li><a href="/logout">Log out</a></li>
-      {% else %}
-      <li><a href="/register">Create account</a></li>
-      {% endif %}
-    </ul>
-  </nav>
+    <nav>
+        <ul>
+            <li><a href="/">{% if session.username %}Home{% else %}Log in{% endif %}</a></li>
+            {% if session.username %}
+            <li><a href="/user/{{ session.user_id }}">Your page</a></li>
+            <li><a href="/new_review">Add review</a></li>
+            <li>Logged in as {{ session.username }}</li>
+            <li><a href="/logout">Log out</a></li>
+            {% else %}
+            <li><a href="/register">Create account</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 
-  {% for message in get_flashed_messages() %}
-  <div class="info">{{ message }}</div>
-  {% endfor %}
+    {% for message in get_flashed_messages() %}
+    <div class="info">{{ message }}</div>
+    {% endfor %}
 
-  <div class="content">
-    {% block content %}{% endblock %}
-  </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 
 </html>

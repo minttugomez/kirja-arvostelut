@@ -5,23 +5,23 @@
 {% block content %}
 <h1>Create an account</h1>
 <form action="/register" method="post">
-  <p>
-    Username: <br />
-    <input type="text" name="username" value="{{ filled.username }}" /><br />
-    <small>&ge;3 characters</small>
-  </p>
-  <p>
-    Password: <br />
-    <input type="password" name="password1" /><br />
-    <small>
-      &ge;8 characters, at least one letter, number and special character
-    </small>
-  </p>
-  <p>
-    Repeat password: <br />
-    <input type="password" name="password2" />
-  </p>
-  <input type="submit" value="Create account" />
+    <p>
+        Username: <br />
+        <input type="text" name="username" value="{{ filled.username }}" /><br />
+        <small>&ge;3 characters</small>
+    </p>
+    <p>
+        Password: <br />
+        <input type="password" name="password1" /><br />
+        <small>
+            &ge;8 characters, at least one letter, number and special character
+        </small>
+    </p>
+    <p>
+        Repeat password: <br />
+        <input type="password" name="password2" />
+    </p>
+    <input type="submit" value="Create account" />
 </form>
 
 <p><a href="/">Back to login</a></p>

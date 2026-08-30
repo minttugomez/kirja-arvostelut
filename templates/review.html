@@ -5,9 +5,9 @@
 {% block content %}
 <h1>{{ book_review[0]['author'] }} - {{ book_review[0]['title'] }}</h1>
 <p>
-  Reviewed by
-  <a href="/user/{{ book_review[0]['user_id'] }}">{{ book_review[0]['username'] }}</a>
-  ({{ book_review[0]['created_at'][:10] }})
+    Reviewed by
+    <a href="/user/{{ book_review[0]['user_id'] }}">{{ book_review[0]['username'] }}</a>
+    ({{ book_review[0]['created_at'][:10] }})
 </p>
 {% for title in review_classes %}
 <p>{{ title }}: {{ review_classes[title] | join(', ') }}</p>
@@ -19,24 +19,24 @@
 <h1>Comments</h1>
 {% for comment in comments %}
 <p>
-  <a href="/user/{{ comment['user_id'] }}">{{ comment['username'] }}</a>
-  ({{ comment['created_at'][:16] }}):
+    <a href="/user/{{ comment['user_id'] }}">{{ comment['username'] }}</a>
+    ({{ comment['created_at'][:16] }}):
 </p>
 <p>{{ comment['comment'] | show_lines }}</p>
 {% if comment['username'] == session.username %}
 <p>
-  <a href="/edit_comment/{{ comment['id'] }}">Edit</a> |
-  <a href="/confirm_delete_comment/{{ comment['id'] }}">Delete</a>
+    <a href="/edit_comment/{{ comment['id'] }}">Edit</a> |
+    <a href="/confirm_delete_comment/{{ comment['id'] }}">Delete</a>
 </p>
 {% endif %}
 <hr />
 {% endfor %}
 
 <form action="/new_comment" method="post" class="comment-form">
-  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-  <input type="hidden" name="review_id" value="{{ book_review[0]['id'] }}" />
-  <label>Comment:</label><br>
-  <textarea name="comment" maxlength="1000" required></textarea><br>
-  <button type="submit">Add comment</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="hidden" name="review_id" value="{{ book_review[0]['id'] }}" />
+    <label>Comment:</label><br>
+    <textarea name="comment" maxlength="1000" required></textarea><br>
+    <button type="submit">Add comment</button>
 </form>
 {% endblock %}

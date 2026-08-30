@@ -11,7 +11,7 @@
     <label for="author">Author:</label><br>
     <input type="text" id="author" name="author" value="{{ filled.author }}" required><br>
     {% for title in classes %}
-    <label>{{ title }}:</label>
+    <p>{{ title }}:</p>
     <div class="genres">
         {% for value in classes[title] %}
         <label>

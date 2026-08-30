@@ -6,12 +6,12 @@
 <h1>New Review</h1>
 <form action="/add" method="POST" class="review-form">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <label>Title:</label><br>
-    <input type="text" name="title" value="{{ filled.title }}" required><br>
-    <label>Author:</label><br>
-    <input type="text" name="author" value="{{ filled.author }}" required><br>
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" value="{{ filled.title }}" required><br>
+    <label for="author">Author:</label><br>
+    <input type="text" id="author" name="author" value="{{ filled.author }}" required><br>
     {% for title in classes %}
-    <label>{{ title }}:</label>
+    <p>{{ title }}:</p>
     <div class="genres">
         {% for value in classes[title] %}
         <label>
@@ -22,8 +22,8 @@
         {% endfor %}
     </div>
     {% endfor %}
-    <label>Review:</label><br>
-    <textarea name="review" required>{{ filled.review }}</textarea><br>
+    <label for="review">Review:</label><br>
+    <textarea id="review" name="review" required>{{ filled.review }}</textarea><br>
     <button type="submit">Add Review</button>
 </form>
 

@@ -6,12 +6,12 @@
 {% if session.username %}
 <form action="/" method="get">
     <p>
-        Author or title:
-        <input type="text" name="query" value="{{ query or '' }}" />
+        <label for="query">Author or title:</label><br />
+        <input type="text" id="query" name="query" value="{{ query or '' }}" />
     </p>
     <p>
-        Genre:
-        <select name="genre">
+        <label for="genre">Genre:</label><br />
+        <select id="genre" name="genre">
             <option value="">All genres</option>
             {% for value in genres %}
             <option value="{{ value }}" {% if value == genre %}selected{% endif %}>{{ value }}</option>
@@ -41,12 +41,12 @@
 <h1>Log in</h1>
 <form action="/login" method="post">
     <p>
-        Username: <br />
-        <input type="text" name="username" />
+        <label for="username">Username:</label><br />
+        <input type="text" id="username" name="username" />
     </p>
     <p>
-        Password: <br />
-        <input type="password" name="password" />
+        <label for="password">Password:</label><br />
+        <input type="password" id="password" name="password" />
     </p>
     <input type="submit" value="Log in" />
 </form>

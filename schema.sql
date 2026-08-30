@@ -12,3 +12,16 @@ CREATE TABLE book_reviews (
     review TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE classes (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    value TEXT
+);
+
+CREATE TABLE review_classes (
+    id INTEGER PRIMARY KEY,
+    review_id INTEGER REFERENCES book_reviews(id),
+    title TEXT,
+    value TEXT
+);

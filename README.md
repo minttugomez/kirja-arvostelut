@@ -21,9 +21,10 @@ Sovelluksen toteuttamiseen on käytetty Claude-kielimallia apukätenä, mutta jo
 $ pip install flask
 ```
 
-2. Luo tietokannan taulut:
+2. Luo tietokannan taulut ja lisää luokittelut:
 ```bash
 $ sqlite3 database.db < schema.sql
+$ sqlite3 database.db < init.sql
 ```
 
 3. Sovelluksen käynnistys:

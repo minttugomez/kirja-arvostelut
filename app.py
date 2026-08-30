@@ -9,8 +9,10 @@ import config
 from reviews import (
     add_review,
     delete_review,
+    get_all_classes,
     get_all_reviews,
     get_review_by_id,
+    get_review_classes,
     get_reviews_by_user,
     get_user_stats,
     search,
@@ -29,6 +31,22 @@ def current_user_id():
 def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+
+def form_classes():
+    all_classes = get_all_classes()
+    classes = []
+    for entry in request.form.getlist("classes"):
+        parts = entry.split(":")
+        if len(parts) != 2:
+            abort(403)
+        class_title, class_value = parts
+        if class_title not in all_classes:
+            abort(403)
+        if class_value not in all_classes[class_title]:
+            abort(403)
+        classes.append((class_title, class_value))
+    return classes
 
 
 @app.errorhandler(403)
@@ -80,7 +98,9 @@ def register():
 def new_review():
     if "username" not in session:
         return redirect("/")
-    return render_template("newreview.html", user_id=current_user_id())
+    return render_template(
+        "newreview.html", user_id=current_user_id(), classes=get_all_classes()
+    )
 
 
 @app.route("/user/<int:user_id>")
@@ -112,7 +132,12 @@ def edit(review_id):
         return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
         abort(403)
-    return render_template("editreview.html", book_review=book_review)
+    return render_template(
+        "editreview.html",
+        book_review=book_review,
+        classes=get_all_classes(),
+        review_classes=get_review_classes(review_id),
+    )
 
 
 @app.route("/confirm_delete/<int:review_id>")
@@ -139,9 +164,10 @@ def add():
     title = request.form["title"]
     author = request.form["author"]
     review = request.form["review"]
+    classes = form_classes()
 
     try:
-        add_review(user_id, title, author, review)
+        add_review(user_id, title, author, review, classes)
         flash("Review added successfully!")
         return redirect(f"/user/{user_id}")
     except sqlite3.DatabaseError:
@@ -163,9 +189,10 @@ def update(review_id):
     title = request.form['title']
     author = request.form['author']
     review = request.form['review']
+    classes = form_classes()
 
     try:
-        update_review(review_id, title, author, review)
+        update_review(review_id, title, author, review, classes)
         flash("Review updated successfully!")
         return redirect(f"/user/{book_review[0]['user_id']}")
     except sqlite3.DatabaseError:
@@ -214,6 +241,7 @@ def logout():
         del session["username"]
         del session["csrf_token"]
     return redirect("/")
+
 
 @app.template_filter()
 def show_lines(content):

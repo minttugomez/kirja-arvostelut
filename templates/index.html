@@ -54,7 +54,7 @@
 <form action="/login" method="post">
     <p>
         <label for="username">Username:</label><br />
-        <input type="text" id="username" name="username" />
+        <input type="text" id="username" name="username" value="{{ login_username or '' }}" />
     </p>
     <p>
         <label for="password">Password:</label><br />

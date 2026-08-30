@@ -458,8 +458,8 @@ def delete(review_id):
 
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form.get("username", "")
+    password = request.form.get("password", "")
 
     password_hash = get_password_hash(username)
 
@@ -469,7 +469,7 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     flash("ERROR: incorrect username or password")
-    return redirect("/")
+    return render_template("index.html", login_username=username)
 
 
 @app.route("/logout")

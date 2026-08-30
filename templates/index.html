@@ -34,11 +34,21 @@
     </p>
     <input type="submit" value="Search" />
   </form>
+  <hr />
   {% for book_review in book_reviews %}
-  <h2>{{ book_review['title'] }} ({{ book_review['author'] }})</h2>
+  <p>
+    <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a>
+    ({{ book_review['created_at'][:10] }}):
+  </p>
+  <p><b>{{ book_review['author'] }} - {{ book_review['title'] }}</b></p>
   <p>{{ book_review['review'] }}</p>
-  <p>- <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a></p>
-  <br />
+  {% if book_review['username'] == session.username %}
+  <p>
+    <a href="/edit/{{ book_review['id'] }}">Edit</a> |
+    <a href="/confirm_delete/{{ book_review['id'] }}">Delete</a>
+  </p>
+  {% endif %}
+  <hr />
   {% endfor %}
 
   {% else %}

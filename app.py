@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+import markupsafe
 
 from flask import Flask, abort, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -213,3 +214,9 @@ def logout():
         del session["username"]
         del session["csrf_token"]
     return redirect("/")
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)

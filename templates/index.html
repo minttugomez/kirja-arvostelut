@@ -41,7 +41,7 @@
     ({{ book_review['created_at'][:10] }}):
   </p>
   <p><b>{{ book_review['author'] }} - {{ book_review['title'] }}</b></p>
-  <p>{{ book_review['review'] }}</p>
+  <p>{{ book_review['review'] | show_lines }}</p>
   {% if book_review['username'] == session.username %}
   <p>
     <a href="/edit/{{ book_review['id'] }}">Edit</a> |

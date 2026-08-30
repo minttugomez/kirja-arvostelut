@@ -5,6 +5,7 @@
 {% block content %}
 {% if session.username %}
 <form action="/" method="get">
+    <h2>Search</h2>
     <p>
         <label for="query">Author or title:</label><br />
         <input type="text" id="query" name="query" value="{{ query or '' }}" />

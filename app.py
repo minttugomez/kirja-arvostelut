@@ -47,6 +47,14 @@ def any_blank(*values):
     return any(not value.strip() for value in values)
 
 
+def comment_error(text):
+    if any_blank(text):
+        return "ERROR: comment cannot be blank"
+    if len(text) > 1000:
+        return "ERROR: comment is too long (max 1000 characters)"
+    return None
+
+
 def form_classes():
     all_classes = get_all_classes()
     classes = []
@@ -194,10 +202,15 @@ def new_comment():
     if csrf_redirect:
         return csrf_redirect
 
-    review_id = request.form["review_id"]
-    comment = request.form["comment"]
+    review_id = request.form.get("review_id", "")
+    comment = request.form.get("comment", "")
     if not get_review_by_id(review_id):
         abort(404)
+
+    error = comment_error(comment)
+    if error:
+        flash(error)
+        return redirect(f"/review/{review_id}")
 
     add_comment(review_id, current_user_id(), comment)
     return redirect(f"/review/{review_id}")
@@ -220,7 +233,14 @@ def edit_comment(comment_id):
     csrf_redirect = check_csrf()
     if csrf_redirect:
         return csrf_redirect
-    update_comment(comment_id, request.form["comment"])
+
+    new_text = request.form.get("comment", "")
+    error = comment_error(new_text)
+    if error:
+        flash(error)
+        return redirect(f"/edit_comment/{comment_id}")
+
+    update_comment(comment_id, new_text)
     return redirect(f"/review/{comment['review_id']}")
 
 

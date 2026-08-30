@@ -36,7 +36,7 @@
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="hidden" name="review_id" value="{{ book_review[0]['id'] }}" />
   <label>Comment:</label><br>
-  <textarea name="comment" required></textarea><br>
+  <textarea name="comment" maxlength="1000" required></textarea><br>
   <button type="submit">Add comment</button>
 </form>
 {% endblock %}

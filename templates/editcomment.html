@@ -7,7 +7,7 @@
 <form action="/edit_comment/{{ comment['id'] }}" method="post" class="comment-form">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <label>Comment:</label><br>
-  <textarea name="comment" required>{{ comment['comment'] }}</textarea><br>
+  <textarea name="comment" maxlength="1000" required>{{ comment['comment'] }}</textarea><br>
   <button type="submit">Save</button>
 </form>
 <br/><a href="/review/{{ comment['review_id'] }}">Cancel</a>

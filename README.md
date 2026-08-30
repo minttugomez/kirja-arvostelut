@@ -1,6 +1,6 @@
 # Kirja-arvostelut
 
-Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan omia kirja-arvosteluitaan ja sen lisäksi lukemaan vapaasti muiden kirjoittamia arvosteluita.
+Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan omia kirja-arvosteluitaan ja sen lisäksi lukemaan vapaasti muiden kirjoittamia arvosteluita. Käyttäjä pystyy myös lisäämään arvosteluihinsa kirjan genren, sekä hakemaan arvosteluita hakusanalla tai genrellä. Käyttäjä pystyy kommentoimaan omia sekä muiden jakamia kirja-arvosteluita.
 
 Sovelluksen toteuttamiseen on käytetty Claude-kielimallia apukätenä, mutta jokainen muutos ja toiminnallisuus on itse tarkastettu.
 

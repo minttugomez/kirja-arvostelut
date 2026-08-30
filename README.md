@@ -8,7 +8,7 @@ Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pysty
 - [x] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan kirja-arvosteluja
 - [x] Käyttäjä näkee sovellukseen lisätyt kirja-arvostelut
 - [x] Käyttäjä pystyy etsimään kirja-arvosteluja hakusanalla
-- [ ] Sovelluksessa on käyttäjäsivu, joka näyttää tilastoja ja käyttäjän lisäämät kirja-arvostelut
+- [x] Sovelluksessa on käyttäjäsivu, joka näyttää tilastoja ja käyttäjän lisäämät kirja-arvostelut
 - [ ] Käyttäjä pystyy valitsemaan kirja-arvostelulle yhden tai useamman luokittelun
 - [ ] Käyttäjä pystyy kommentoimaan kirja-arvosteluja
 

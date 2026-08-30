@@ -45,9 +45,34 @@ def index():
     )
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html", filled={})
+
+    username = request.form["username"]
+    password1 = request.form["password1"]
+    password2 = request.form["password2"]
+    filled = {"username": username}
+    if len(username) < 3:
+        flash("ERROR: username must be at least 3 characters")
+        return render_template("register.html", filled=filled)
+    if len(password1) < 8:
+        flash("ERROR: password must be at least 8 characters")
+        return render_template("register.html", filled=filled)
+    if password1 != password2:
+        flash("ERROR: passwords do not match")
+        return render_template("register.html", filled=filled)
+    password_hash = generate_password_hash(password1)
+
+    try:
+        create_user(username, password_hash)
+    except sqlite3.IntegrityError:
+        flash("ERROR: username not available")
+        return render_template("register.html", filled=filled)
+
+    flash("Account created")
+    return redirect("/")
 
 
 @app.route("/new_review")
@@ -100,32 +125,6 @@ def confirm_delete(review_id):
     if book_review[0]["username"] != session["username"]:
         abort(403)
     return render_template("confirmdelete.html", book_review=book_review)
-
-
-@app.route("/create", methods=["POST"])
-def create():
-    username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
-    if len(username) < 3:
-        flash("ERROR: username must be at least 3 characters")
-        return redirect("/register")
-    if len(password1) < 8:
-        flash("ERROR: password must be at least 8 characters")
-        return redirect("/register")
-    if password1 != password2:
-        flash("ERROR: passwords do not match")
-        return redirect("/register")
-    password_hash = generate_password_hash(password1)
-
-    try:
-        create_user(username, password_hash)
-    except sqlite3.IntegrityError:
-        flash("ERROR: username not available")
-        return redirect("/register")
-
-    flash("Account created")
-    return redirect("/")
 
 
 @app.route("/add", methods=["POST"])

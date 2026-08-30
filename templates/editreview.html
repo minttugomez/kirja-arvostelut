@@ -17,23 +17,23 @@
   <form action="/update/{{ book_review[0]['id'] }}" method="POST" class="review-form">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <label for="title">Title:</label><br>
-    <input type="text" id="title" name="title" value="{{ book_review[0]['title'] }}" required><br>
+    <input type="text" id="title" name="title" value="{{ filled.title }}" required><br>
     <label for="author">Author:</label><br>
-    <input type="text" id="author" name="author" value="{{ book_review[0]['author'] }}" required><br>
+    <input type="text" id="author" name="author" value="{{ filled.author }}" required><br>
     {% for title in classes %}
     <label>{{ title }}:</label>
     <div class="genres">
       {% for value in classes[title] %}
       <label>
         <input type="checkbox" name="classes" value="{{ title }}:{{ value }}"
-          {% if value in review_classes.get(title, []) %}checked{% endif %} />
+          {% if (title ~ ":" ~ value) in selected %}checked{% endif %} />
         {{ value }}
       </label>
       {% endfor %}
     </div>
     {% endfor %}
     <label for="review">Review:</label><br>
-    <textarea id="review" name="review" required>{{ book_review[0]['review'] }}</textarea><br>
+    <textarea id="review" name="review" required>{{ filled.review }}</textarea><br>
     <button type="submit">Update Review</button>
   </form>
   <br/><a href="/user/{{ book_review[0]['user_id'] }}">Cancel</a>

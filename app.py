@@ -37,8 +37,12 @@ def current_user_id():
 
 
 def check_csrf():
-    if request.form["csrf_token"] != session["csrf_token"]:
+    if request.form.get("csrf_token") != session.get("csrf_token"):
         abort(403)
+
+
+def any_blank(*values):
+    return any(not value.strip() for value in values)
 
 
 def form_classes():
@@ -121,7 +125,11 @@ def new_review():
     if "username" not in session:
         return redirect("/")
     return render_template(
-        "newreview.html", user_id=current_user_id(), classes=get_all_classes()
+        "newreview.html",
+        user_id=current_user_id(),
+        classes=get_all_classes(),
+        filled={},
+        selected=[],
     )
 
 
@@ -230,11 +238,16 @@ def edit(review_id):
         return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
         abort(403)
+    row = book_review[0]
+    review_classes = get_review_classes(review_id)
+    selected = [f"{t}:{v}" for t in review_classes for v in review_classes[t]]
     return render_template(
         "editreview.html",
         book_review=book_review,
         classes=get_all_classes(),
-        review_classes=get_review_classes(review_id),
+        filled={"title": row["title"], "author": row["author"],
+                "review": row["review"]},
+        selected=selected,
     )
 
 
@@ -259,10 +272,26 @@ def add():
 
     user_id = get_user_id(session["username"])
 
-    title = request.form["title"]
-    author = request.form["author"]
-    review = request.form["review"]
+    title = request.form.get("title", "")
+    author = request.form.get("author", "")
+    review = request.form.get("review", "")
     classes = form_classes()
+
+    errors = []
+    if any_blank(title, author, review):
+        errors.append("ERROR: title, author and review cannot be blank")
+    if not classes:
+        errors.append("ERROR: pick at least one genre")
+    if errors:
+        for error in errors:
+            flash(error)
+        return render_template(
+            "newreview.html",
+            user_id=user_id,
+            classes=get_all_classes(),
+            filled={"title": title, "author": author, "review": review},
+            selected=request.form.getlist("classes"),
+        )
 
     try:
         add_review(user_id, title, author, review, classes)
@@ -284,10 +313,26 @@ def update(review_id):
     if book_review[0]["username"] != session["username"]:
         abort(403)
 
-    title = request.form['title']
-    author = request.form['author']
-    review = request.form['review']
+    title = request.form.get("title", "")
+    author = request.form.get("author", "")
+    review = request.form.get("review", "")
     classes = form_classes()
+
+    errors = []
+    if any_blank(title, author, review):
+        errors.append("ERROR: title, author and review cannot be blank")
+    if not classes:
+        errors.append("ERROR: pick at least one genre")
+    if errors:
+        for error in errors:
+            flash(error)
+        return render_template(
+            "editreview.html",
+            book_review=book_review,
+            classes=get_all_classes(),
+            filled={"title": title, "author": author, "review": review},
+            selected=request.form.getlist("classes"),
+        )
 
     try:
         update_review(review_id, title, author, review, classes)

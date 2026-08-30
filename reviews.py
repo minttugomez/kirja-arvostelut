@@ -1,18 +1,13 @@
 import db
 
-
-def get_all_reviews():
-    sql = """
-    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
-           book_reviews.author, book_reviews.review, book_reviews.created_at,
-           users.username
-    FROM book_reviews
-    JOIN users ON book_reviews.user_id = users.id
-    ORDER BY book_reviews.id DESC"""
-    return db.query(sql)
+REVIEW_COLUMNS = (
+    "book_reviews.id, book_reviews.user_id, book_reviews.title, "
+    "book_reviews.author, book_reviews.review, book_reviews.created_at, "
+    "users.username"
+)
 
 
-def search(query, genre):
+def _review_filter(query, genre):
     where = []
     params = []
     if query:
@@ -26,29 +21,41 @@ def search(query, genre):
             "(SELECT review_id FROM review_classes WHERE value = ?)"
         )
         params.append(genre)
+    clause = " WHERE " + " AND ".join(where) if where else ""
+    return clause, params
 
-    sql = """
-    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
-           book_reviews.author, book_reviews.review, book_reviews.created_at,
-           users.username
+
+def count_reviews(query, genre):
+    clause, params = _review_filter(query, genre)
+    sql = "SELECT COUNT(*) FROM book_reviews" + clause
+    return db.query(sql, params)[0][0]
+
+
+def get_reviews(query, genre, page, page_size):
+    clause, params = _review_filter(query, genre)
+    sql = f"""
+    SELECT {REVIEW_COLUMNS}
     FROM book_reviews
-    JOIN users ON book_reviews.user_id = users.id"""
-    if where:
-        sql += " WHERE " + " AND ".join(where)
-    sql += " ORDER BY book_reviews.id DESC"
-    return db.query(sql, params)
+    JOIN users ON book_reviews.user_id = users.id{clause}
+    ORDER BY book_reviews.id DESC
+    LIMIT ? OFFSET ?"""
+    return db.query(sql, params + [page_size, page_size * (page - 1)])
 
 
-def get_reviews_by_user(user_id):
-    sql = """
-    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
-           book_reviews.author, book_reviews.review, book_reviews.created_at,
-           users.username
+def count_reviews_by_user(user_id):
+    sql = "SELECT COUNT(*) FROM book_reviews WHERE user_id = ?"
+    return db.query(sql, [user_id])[0][0]
+
+
+def get_reviews_by_user(user_id, page, page_size):
+    sql = f"""
+    SELECT {REVIEW_COLUMNS}
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
     WHERE book_reviews.user_id = ?
-    ORDER BY book_reviews.id DESC"""
-    return db.query(sql, [user_id])
+    ORDER BY book_reviews.id DESC
+    LIMIT ? OFFSET ?"""
+    return db.query(sql, [user_id, page_size, page_size * (page - 1)])
 
 
 def get_user_stats(user_id):
@@ -62,14 +69,11 @@ def get_user_stats(user_id):
 
 
 def get_review_by_id(review_id):
-    sql = """
-    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
-           book_reviews.author, book_reviews.review, book_reviews.created_at,
-           users.username
+    sql = f"""
+    SELECT {REVIEW_COLUMNS}
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
-    WHERE book_reviews.id = ?
-    """
+    WHERE book_reviews.id = ?"""
     return db.query(sql, [review_id])
 
 

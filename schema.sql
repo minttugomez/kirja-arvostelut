@@ -33,3 +33,8 @@ CREATE TABLE comments (
     comment TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE INDEX idx_book_reviews_user_id ON book_reviews (user_id);
+CREATE INDEX idx_review_classes_review_id ON review_classes (review_id);
+CREATE INDEX idx_review_classes_value ON review_classes (value);
+CREATE INDEX idx_comments_review_id ON comments (review_id);

@@ -1,6 +1,9 @@
+import math
 import re
 import secrets
 import sqlite3
+from urllib.parse import quote
+
 import markupsafe
 
 from flask import (Flask, abort, flash, redirect, render_template, request,
@@ -17,14 +20,15 @@ from comments import (
 )
 from reviews import (
     add_review,
+    count_reviews,
+    count_reviews_by_user,
     delete_review,
     get_all_classes,
-    get_all_reviews,
     get_review_by_id,
     get_review_classes,
+    get_reviews,
     get_reviews_by_user,
     get_user_stats,
-    search,
     update_review,
 )
 from users import create_user, get_password_hash, get_user, get_user_id
@@ -32,9 +36,15 @@ from users import create_user, get_password_hash, get_user, get_user_id
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+PAGE_SIZE = 10
+
 
 def current_user_id():
     return get_user_id(session["username"])
+
+
+def page_count_for(total):
+    return max(math.ceil(total / PAGE_SIZE), 1)
 
 
 def check_csrf():
@@ -89,10 +99,20 @@ def not_found(error):  # pylint: disable=unused-argument
 def index():
     query = request.args.get("query")
     genre = request.args.get("genre")
-    if query or genre:
-        book_reviews = search(query, genre)
-    else:
-        book_reviews = get_all_reviews() or []
+    page = request.args.get("page", 1, type=int)
+
+    page_count = page_count_for(count_reviews(query, genre))
+    filter_qs = ""
+    if query:
+        filter_qs += "&query=" + quote(query)
+    if genre:
+        filter_qs += "&genre=" + quote(genre)
+    if page < 1:
+        return redirect("/?page=1" + filter_qs)
+    if page > page_count:
+        return redirect(f"/?page={page_count}{filter_qs}")
+
+    book_reviews = get_reviews(query, genre, page, PAGE_SIZE)
     user_id = current_user_id() if "username" in session else None
     return render_template(
         "index.html",
@@ -101,6 +121,9 @@ def index():
         genres=get_all_classes().get("Genre", []),
         book_reviews=book_reviews,
         user_id=user_id,
+        page=page,
+        page_count=page_count,
+        filter_qs=filter_qs,
     )
 
 
@@ -168,7 +191,15 @@ def user_page(user_id):
     user = get_user(user_id)
     if not user:
         abort(404)
-    book_reviews = get_reviews_by_user(user_id) or []
+
+    page = request.args.get("page", 1, type=int)
+    page_count = page_count_for(count_reviews_by_user(user_id))
+    if page < 1:
+        return redirect(f"/user/{user_id}?page=1")
+    if page > page_count:
+        return redirect(f"/user/{user_id}?page={page_count}")
+
+    book_reviews = get_reviews_by_user(user_id, page, PAGE_SIZE)
     stats = get_user_stats(user_id)
     is_owner = user["username"] == session["username"]
     return render_template(
@@ -177,6 +208,8 @@ def user_page(user_id):
         book_reviews=book_reviews,
         stats=stats,
         is_owner=is_owner,
+        page=page,
+        page_count=page_count,
     )
 
 

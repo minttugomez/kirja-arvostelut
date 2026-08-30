@@ -31,4 +31,16 @@
 {% endif %}
 <hr />
 {% endfor %}
+
+{% if page_count > 1 %}
+<p>
+    {% if page > 1 %}
+    <a href="/user/{{ user['id'] }}?page={{ page - 1 }}">&laquo; Previous</a>
+    {% endif %}
+    Page {{ page }} / {{ page_count }}
+    {% if page < page_count %}
+    <a href="/user/{{ user['id'] }}?page={{ page + 1 }}">Next &raquo;</a>
+    {% endif %}
+</p>
+{% endif %}
 {% endblock %}

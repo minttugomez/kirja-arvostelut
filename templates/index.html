@@ -37,6 +37,18 @@
 <hr />
 {% endfor %}
 
+{% if page_count > 1 %}
+<p>
+    {% if page > 1 %}
+    <a href="/?page={{ page - 1 }}{{ filter_qs }}">&laquo; Previous</a>
+    {% endif %}
+    Page {{ page }} / {{ page_count }}
+    {% if page < page_count %}
+    <a href="/?page={{ page + 1 }}{{ filter_qs }}">Next &raquo;</a>
+    {% endif %}
+</p>
+{% endif %}
+
 {% else %}
 <h1>Log in</h1>
 <form action="/login" method="post">

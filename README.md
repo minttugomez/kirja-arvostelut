@@ -2,6 +2,8 @@
 
 Tämä sovellus on tarkoitettu kirja-arvosteluiden jakamiseen. Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan omia kirja-arvosteluitaan ja sen lisäksi lukemaan vapaasti muiden kirjoittamia arvosteluita.
 
+Sovelluksen toteuttamiseen on käytetty Claude-kielimallia apukätenä, mutta jokainen muutos ja toiminnallisuus on itse tarkastettu.
+
 ## Sovelluksen toiminnot
 
 - [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen

@@ -81,9 +81,9 @@ def register():
     if request.method == "GET":
         return render_template("register.html", filled={})
 
-    username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
+    username = request.form.get("username", "")
+    password1 = request.form.get("password1", "")
+    password2 = request.form.get("password2", "")
     filled = {"username": username}
 
     errors = []
@@ -93,7 +93,7 @@ def register():
         errors.append("ERROR: username may only contain letters and numbers")
     if len(password1) < 8:
         errors.append("ERROR: password must be at least 8 characters")
-    if " " in password1:
+    if re.search(r"\s", password1):
         errors.append("ERROR: password must not contain spaces")
     if (not re.search(r"[A-Za-z]", password1)
             or not re.search(r"[0-9]", password1)

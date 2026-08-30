@@ -1,0 +1,7 @@
+[MAIN]
+# The project is a small Flask app whose modules and functions have short,
+# descriptive names; per-function and per-module docstrings would only repeat
+# the name, so these two checks are disabled.
+disable =
+    missing-module-docstring,
+    missing-function-docstring

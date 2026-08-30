@@ -3,7 +3,8 @@ import secrets
 import sqlite3
 import markupsafe
 
-from flask import Flask, abort, flash, redirect, render_template, request, session
+from flask import (Flask, abort, flash, redirect, render_template, request,
+                   session)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import config
@@ -73,13 +74,13 @@ def form_classes():
 
 
 @app.errorhandler(403)
-def forbidden(error):
+def forbidden(error):  # pylint: disable=unused-argument
     flash("ERROR: you are not allowed to do that")
     return redirect("/")
 
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found(error):  # pylint: disable=unused-argument
     flash("ERROR: page not found")
     return redirect("/")
 
@@ -289,7 +290,8 @@ def edit(review_id):
         return redirect(f"/review/{review_id}")
     row = book_review[0]
     review_classes = get_review_classes(review_id)
-    selected = [f"{t}:{v}" for t in review_classes for v in review_classes[t]]
+    selected = [f"{t}:{v}" for t, values in review_classes.items()
+                for v in values]
     return render_template(
         "editreview.html",
         book_review=book_review,
@@ -433,9 +435,8 @@ def login():
         session["user_id"] = get_user_id(username)
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
-    else:
-        flash("ERROR: incorrect username or password")
-        return redirect("/")
+    flash("ERROR: incorrect username or password")
+    return redirect("/")
 
 
 @app.route("/logout")

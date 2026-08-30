@@ -12,7 +12,7 @@ def get_connection():
     return con
 
 
-def execute(sql, params=[]):
+def execute(sql, params=()):
     con = get_connection()
     try:
         result = con.execute(sql, params)
@@ -26,7 +26,7 @@ def last_insert_id():
     return g.last_insert_id
 
 
-def query(sql, params=[]):
+def query(sql, params=()):
     con = get_connection()
     try:
         return con.execute(sql, params).fetchall()

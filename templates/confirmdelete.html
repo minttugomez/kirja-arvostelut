@@ -14,6 +14,7 @@
 
   <h1>Are you sure to delete review {{ book_review[0]['title'] }}?</h1>
   <form action="/delete/{{ book_review[0]['id'] }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <button type="submit">Yes</button>
   </form>
   <a href="/user/{{ book_review[0]['user_id'] }}">No</a>

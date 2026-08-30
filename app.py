@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 
 from flask import Flask, abort, flash, redirect, render_template, request, session
@@ -22,6 +23,11 @@ app.secret_key = config.secret_key
 
 def current_user_id():
     return get_user_id(session["username"])
+
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
 
 
 @app.errorhandler(403)
@@ -126,6 +132,7 @@ def create():
 def add():
     if "username" not in session:
         return redirect("/")
+    check_csrf()
 
     user_id = get_user_id(session["username"])
 
@@ -145,6 +152,7 @@ def add():
 def update(review_id):
     if "username" not in session:
         return redirect("/")
+    check_csrf()
 
     book_review = get_review_by_id(review_id)
     if not book_review:
@@ -168,6 +176,7 @@ def update(review_id):
 def delete(review_id):
     if "username" not in session:
         return redirect("/")
+    check_csrf()
 
     book_review = get_review_by_id(review_id)
     if not book_review:
@@ -192,6 +201,7 @@ def login():
 
     if password_hash and check_password_hash(password_hash, password):
         session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
         flash("ERROR: incorrect username or password")
@@ -202,4 +212,5 @@ def login():
 def logout():
     if "username" in session:
         del session["username"]
-        return redirect("/")
+        del session["csrf_token"]
+    return redirect("/")

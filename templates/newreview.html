@@ -14,6 +14,7 @@
 
   <h1>New Review</h1>
   <form action="/add" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <label>Title:</label><br>
     <input type="text" name="title" required><br>
     <label>Author:</label><br>

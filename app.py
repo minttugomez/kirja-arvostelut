@@ -401,6 +401,7 @@ def login():
 
     if password_hash and check_password_hash(password_hash, password):
         session["username"] = username
+        session["user_id"] = get_user_id(username)
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
@@ -412,6 +413,7 @@ def login():
 def logout():
     if "username" in session:
         del session["username"]
+        del session["user_id"]
         del session["csrf_token"]
     return redirect("/")
 

@@ -1,43 +1,30 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Edit Review</title>
-  <link rel="stylesheet" href="/static/main.css">
-</head>
+{% block title %}Edit Review{% endblock %}
 
-<body>
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
+{% block content %}
+<h1>Edit Review</h1>
+<form action="/update/{{ book_review[0]['id'] }}" method="POST" class="review-form">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <label for="title">Title:</label><br>
+  <input type="text" id="title" name="title" value="{{ filled.title }}" required><br>
+  <label for="author">Author:</label><br>
+  <input type="text" id="author" name="author" value="{{ filled.author }}" required><br>
+  {% for title in classes %}
+  <label>{{ title }}:</label>
+  <div class="genres">
+    {% for value in classes[title] %}
+    <label>
+      <input type="checkbox" name="classes" value="{{ title }}:{{ value }}"
+        {% if (title ~ ":" ~ value) in selected %}checked{% endif %} />
+      {{ value }}
+    </label>
+    {% endfor %}
   </div>
   {% endfor %}
-
-  <h1>Edit Review</h1>
-  <form action="/update/{{ book_review[0]['id'] }}" method="POST" class="review-form">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <label for="title">Title:</label><br>
-    <input type="text" id="title" name="title" value="{{ filled.title }}" required><br>
-    <label for="author">Author:</label><br>
-    <input type="text" id="author" name="author" value="{{ filled.author }}" required><br>
-    {% for title in classes %}
-    <label>{{ title }}:</label>
-    <div class="genres">
-      {% for value in classes[title] %}
-      <label>
-        <input type="checkbox" name="classes" value="{{ title }}:{{ value }}"
-          {% if (title ~ ":" ~ value) in selected %}checked{% endif %} />
-        {{ value }}
-      </label>
-      {% endfor %}
-    </div>
-    {% endfor %}
-    <label for="review">Review:</label><br>
-    <textarea id="review" name="review" required>{{ filled.review }}</textarea><br>
-    <button type="submit">Update Review</button>
-  </form>
-  <br/><a href="/user/{{ book_review[0]['user_id'] }}">Cancel</a>
-
-</body>
-
-</html>
+  <label for="review">Review:</label><br>
+  <textarea id="review" name="review" required>{{ filled.review }}</textarea><br>
+  <button type="submit">Update Review</button>
+</form>
+<br/><a href="/user/{{ book_review[0]['user_id'] }}">Cancel</a>
+{% endblock %}

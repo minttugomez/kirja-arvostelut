@@ -1,7 +1,67 @@
+body {
+  margin: 1em auto;
+  max-width: 55em;
+  padding: 0 1em;
+  font-family: sans-serif;
+  color: #222;
+  background-color: #f4f4f4;
+}
+
+.header {
+  padding: 0.5em 0;
+}
+
+.header a {
+  font-size: 1.7em;
+  font-weight: bold;
+  text-decoration: none;
+  color: #222;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.5em 0;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+
+nav li {
+  display: inline-block;
+  padding: 0 0.75em;
+}
+
+nav li:not(:last-of-type) {
+  border-right: 1px solid #999;
+}
+
+.content {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.5em 1.5em 1.5em;
+  margin-top: 1em;
+}
+
+.info {
+  background-color: #fff3cd;
+  border: 1px solid #ffe69c;
+  padding: 0.5em 1em;
+  margin: 1em 0;
+}
+
+h1 {
+  font-size: 1.4em;
+}
+
+h2 {
+  font-size: 1.15em;
+}
+
 .review-form input[type="text"],
 .review-form textarea,
 .review-form .genres {
   width: 69ch;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -27,6 +87,7 @@
 
 .comment-form textarea {
   width: 60ch;
+  max-width: 100%;
   height: 8em;
   box-sizing: border-box;
 }

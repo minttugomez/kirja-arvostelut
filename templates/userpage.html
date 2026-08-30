@@ -1,52 +1,34 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ user['username'] }}</title>
-</head>
+{% block title %}{{ user['username'] }}{% endblock %}
 
-<body>
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
-  <p>
-    <a href="/">Back to main page</a>
-  </p>
-  <h1>{{ user['username'] }}{% if is_owner %} (you){% endif %}</h1>
-  <p>
-    {{ user['username'] }} has written {{ stats['count'] }}
-    review{{ '' if stats['count'] == 1 else 's' }}.
-    {% if stats['count'] %}
-    <br />
-    First review written {{ stats['first_review'] }}<br />
-    Latest review written {{ stats['last_review'] }}
-    {% endif %}
-  </p>
-  {% if is_owner %}
-  <p>
-    <a href="/new_review">Add review</a> | <a href="/logout">Log out</a> <br />
-    <br />
-  </p>
+{% block content %}
+<h1>{{ user['username'] }}{% if is_owner %} (you){% endif %}</h1>
+<p>
+  {{ user['username'] }} has written {{ stats['count'] }}
+  review{{ '' if stats['count'] == 1 else 's' }}.
+  {% if stats['count'] %}
+  <br />
+  First review written {{ stats['first_review'] }}<br />
+  Latest review written {{ stats['last_review'] }}
   {% endif %}
-  <h1>Reviews by {{ user['username'] }}</h1>
-  <hr />
-  {% for book_review in book_reviews %}
-  <p>
-    <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a>
-    ({{ book_review['created_at'][:10] }}):
-  </p>
-  <p><b><a href="/review/{{ book_review['id'] }}">{{ book_review['author'] }} - {{ book_review['title'] }}</a></b></p>
-  <p>{{ book_review['review'] | show_preview }}</p>
-  {% if is_owner %}
-  <p>
-    <a href="/edit/{{ book_review['id'] }}">Edit</a> |
-    <a href="/confirm_delete/{{ book_review['id'] }}">Delete</a>
-  </p>
-  {% endif %}
-  <hr />
-  {% endfor %}
-</body>
+</p>
 
-</html>
+<h1>Reviews by {{ user['username'] }}</h1>
+<hr />
+{% for book_review in book_reviews %}
+<p>
+  <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a>
+  ({{ book_review['created_at'][:10] }}):
+</p>
+<p><b><a href="/review/{{ book_review['id'] }}">{{ book_review['author'] }} - {{ book_review['title'] }}</a></b></p>
+<p>{{ book_review['review'] | show_preview }}</p>
+{% if is_owner %}
+<p>
+  <a href="/edit/{{ book_review['id'] }}">Edit</a> |
+  <a href="/confirm_delete/{{ book_review['id'] }}">Delete</a>
+</p>
+{% endif %}
+<hr />
+{% endfor %}
+{% endblock %}

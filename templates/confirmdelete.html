@@ -1,23 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Delete</title>
-</head>
+{% block title %}Delete Review{% endblock %}
 
-<body>
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
-
-  <h1>Are you sure to delete review {{ book_review[0]['title'] }}?</h1>
-  <form action="/delete/{{ book_review[0]['id'] }}" method="post">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <button type="submit">Yes</button>
-  </form>
-  <a href="/user/{{ book_review[0]['user_id'] }}">No</a>
-</body>
-
-</html>
+{% block content %}
+<h1>Are you sure to delete review {{ book_review[0]['title'] }}?</h1>
+<form action="/delete/{{ book_review[0]['id'] }}" method="post">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <button type="submit">Yes</button>
+</form>
+<a href="/user/{{ book_review[0]['user_id'] }}">No</a>
+{% endblock %}

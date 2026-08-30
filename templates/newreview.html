@@ -3,6 +3,7 @@
 
 <head>
   <title>New Review</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
@@ -13,20 +14,25 @@
   {% endfor %}
 
   <h1>New Review</h1>
-  <form action="/add" method="POST">
+  <form action="/add" method="POST" class="review-form">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <label>Title:</label><br>
     <input type="text" name="title" required><br>
     <label>Author:</label><br>
     <input type="text" name="author" required><br>
+    {% for title in classes %}
+    <label>{{ title }}:</label>
+    <div class="genres">
+      {% for value in classes[title] %}
+      <label>
+        <input type="checkbox" name="classes" value="{{ title }}:{{ value }}" />
+        {{ value }}
+      </label>
+      {% endfor %}
+    </div>
+    {% endfor %}
     <label>Review:</label><br>
     <textarea name="review" required></textarea><br>
-    {% for title in classes %}
-    <label>{{ title }}:</label><br>
-    {% for value in classes[title] %}
-    <input type="checkbox" name="classes" value="{{ title }}:{{ value }}" /> {{ value }}<br>
-    {% endfor %}
-    {% endfor %}
     <button type="submit">Add Review</button>
   </form>
 

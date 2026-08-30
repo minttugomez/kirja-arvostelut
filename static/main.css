@@ -1,0 +1,26 @@
+.review-form input[type="text"],
+.review-form textarea,
+.review-form .genres {
+  width: 69ch;
+  box-sizing: border-box;
+}
+
+.review-form textarea {
+  height: 15em;
+}
+
+.review-form .genres {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4em 1.5em;
+}
+
+.review-form .genres label {
+  white-space: nowrap;
+}
+
+.review-form input[type="text"],
+.review-form textarea,
+.review-form .genres {
+  margin-bottom: 1.25em;
+}

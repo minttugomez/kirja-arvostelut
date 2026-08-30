@@ -38,7 +38,9 @@ def current_user_id():
 
 def check_csrf():
     if request.form.get("csrf_token") != session.get("csrf_token"):
-        abort(403)
+        flash("ERROR: invalid request, please try again")
+        return redirect("/")
+    return None
 
 
 def any_blank(*values):
@@ -51,18 +53,26 @@ def form_classes():
     for entry in request.form.getlist("classes"):
         parts = entry.split(":")
         if len(parts) != 2:
-            abort(403)
+            flash("ERROR: invalid genre selection")
+            return []
         class_title, class_value = parts
-        if class_title not in all_classes:
-            abort(403)
-        if class_value not in all_classes[class_title]:
-            abort(403)
+        if (class_title not in all_classes
+                or class_value not in all_classes[class_title]):
+            flash("ERROR: invalid genre selection")
+            return []
         classes.append((class_title, class_value))
     return classes
 
 
 @app.errorhandler(403)
 def forbidden(error):
+    flash("ERROR: you are not allowed to do that")
+    return redirect("/")
+
+
+@app.errorhandler(404)
+def not_found(error):
+    flash("ERROR: page not found")
     return redirect("/")
 
 
@@ -171,7 +181,9 @@ def review_page(review_id):
 def new_comment():
     if "username" not in session:
         return redirect("/")
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
 
     review_id = request.form["review_id"]
     comment = request.form["comment"]
@@ -190,12 +202,15 @@ def edit_comment(comment_id):
     if not comment:
         abort(404)
     if comment["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own comments")
+        return redirect(f"/review/{comment['review_id']}")
 
     if request.method == "GET":
         return render_template("editcomment.html", comment=comment)
 
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
     update_comment(comment_id, request.form["comment"])
     return redirect(f"/review/{comment['review_id']}")
 
@@ -208,7 +223,8 @@ def confirm_delete_comment(comment_id):
     if not comment:
         abort(404)
     if comment["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own comments")
+        return redirect(f"/review/{comment['review_id']}")
     return render_template("confirmdeletecomment.html", comment=comment)
 
 
@@ -216,13 +232,16 @@ def confirm_delete_comment(comment_id):
 def delete_comment(comment_id):
     if "username" not in session:
         return redirect("/")
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
 
     comment = get_comment(comment_id)
     if not comment:
         abort(404)
     if comment["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own comments")
+        return redirect(f"/review/{comment['review_id']}")
 
     remove_comment(comment_id)
     return redirect(f"/review/{comment['review_id']}")
@@ -237,7 +256,8 @@ def edit(review_id):
         flash("Review not found")
         return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own reviews")
+        return redirect(f"/review/{review_id}")
     row = book_review[0]
     review_classes = get_review_classes(review_id)
     selected = [f"{t}:{v}" for t in review_classes for v in review_classes[t]]
@@ -260,7 +280,8 @@ def confirm_delete(review_id):
         flash("Review not found")
         return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own reviews")
+        return redirect(f"/review/{review_id}")
     return render_template("confirmdelete.html", book_review=book_review)
 
 
@@ -268,7 +289,9 @@ def confirm_delete(review_id):
 def add():
     if "username" not in session:
         return redirect("/")
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
 
     user_id = get_user_id(session["username"])
 
@@ -305,13 +328,16 @@ def add():
 def update(review_id):
     if "username" not in session:
         return redirect("/")
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
 
     book_review = get_review_by_id(review_id)
     if not book_review:
         abort(404)
     if book_review[0]["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own reviews")
+        return redirect(f"/review/{review_id}")
 
     title = request.form.get("title", "")
     author = request.form.get("author", "")
@@ -346,13 +372,16 @@ def update(review_id):
 def delete(review_id):
     if "username" not in session:
         return redirect("/")
-    check_csrf()
+    csrf_redirect = check_csrf()
+    if csrf_redirect:
+        return csrf_redirect
 
     book_review = get_review_by_id(review_id)
     if not book_review:
         abort(404)
     if book_review[0]["username"] != session["username"]:
-        abort(403)
+        flash("ERROR: you can only change your own reviews")
+        return redirect(f"/review/{review_id}")
 
     try:
         delete_review(review_id)

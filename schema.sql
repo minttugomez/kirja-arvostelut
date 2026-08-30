@@ -25,3 +25,11 @@ CREATE TABLE review_classes (
     title TEXT,
     value TEXT
 );
+
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY,
+    review_id INTEGER NOT NULL REFERENCES book_reviews(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    comment TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

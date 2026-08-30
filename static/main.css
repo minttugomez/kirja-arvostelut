@@ -24,3 +24,9 @@
 .review-form .genres {
   margin-bottom: 1.25em;
 }
+
+.comment-form textarea {
+  width: 60ch;
+  height: 8em;
+  box-sizing: border-box;
+}

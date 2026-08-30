@@ -12,7 +12,7 @@ Sovelluksen toteuttamiseen on käytetty Claude-kielimallia apukätenä, mutta jo
 - [x] Käyttäjä pystyy etsimään kirja-arvosteluja hakusanalla
 - [x] Sovelluksessa on käyttäjäsivu, joka näyttää tilastoja ja käyttäjän lisäämät kirja-arvostelut
 - [x] Käyttäjä pystyy valitsemaan kirja-arvostelulle yhden tai useamman luokittelun
-- [ ] Käyttäjä pystyy kommentoimaan kirja-arvosteluja
+- [x] Käyttäjä pystyy kommentoimaan kirja-arvosteluja
 
 ## Sovelluksen asennus
 

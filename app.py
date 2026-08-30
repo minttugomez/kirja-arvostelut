@@ -6,6 +6,13 @@ from flask import Flask, abort, flash, redirect, render_template, request, sessi
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import config
+from comments import (
+    add_comment,
+    get_comment,
+    get_comments,
+    remove_comment,
+    update_comment,
+)
 from reviews import (
     add_review,
     delete_review,
@@ -133,7 +140,69 @@ def review_page(review_id):
         "review.html",
         book_review=book_review,
         review_classes=get_review_classes(review_id),
+        comments=get_comments(review_id),
     )
+
+
+@app.route("/new_comment", methods=["POST"])
+def new_comment():
+    if "username" not in session:
+        return redirect("/")
+    check_csrf()
+
+    review_id = request.form["review_id"]
+    comment = request.form["comment"]
+    if not get_review_by_id(review_id):
+        abort(404)
+
+    add_comment(review_id, current_user_id(), comment)
+    return redirect(f"/review/{review_id}")
+
+
+@app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
+def edit_comment(comment_id):
+    if "username" not in session:
+        return redirect("/")
+    comment = get_comment(comment_id)
+    if not comment:
+        abort(404)
+    if comment["username"] != session["username"]:
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("editcomment.html", comment=comment)
+
+    check_csrf()
+    update_comment(comment_id, request.form["comment"])
+    return redirect(f"/review/{comment['review_id']}")
+
+
+@app.route("/confirm_delete_comment/<int:comment_id>")
+def confirm_delete_comment(comment_id):
+    if "username" not in session:
+        return redirect("/")
+    comment = get_comment(comment_id)
+    if not comment:
+        abort(404)
+    if comment["username"] != session["username"]:
+        abort(403)
+    return render_template("confirmdeletecomment.html", comment=comment)
+
+
+@app.route("/delete_comment/<int:comment_id>", methods=["POST"])
+def delete_comment(comment_id):
+    if "username" not in session:
+        return redirect("/")
+    check_csrf()
+
+    comment = get_comment(comment_id)
+    if not comment:
+        abort(404)
+    if comment["username"] != session["username"]:
+        abort(403)
+
+    remove_comment(comment_id)
+    return redirect(f"/review/{comment['review_id']}")
 
 
 @app.route("/edit/<int:review_id>")

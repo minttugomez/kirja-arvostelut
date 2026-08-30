@@ -3,6 +3,7 @@
 
 <head>
   <title>{{ book_review[0]['title'] }}</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
@@ -27,6 +28,30 @@
   <hr />
   <p>{{ book_review[0]['review'] | show_lines }}</p>
   <hr />
+
+  <h1>Comments</h1>
+  {% for comment in comments %}
+  <p>
+    <a href="/user/{{ comment['user_id'] }}">{{ comment['username'] }}</a>
+    ({{ comment['created_at'][:16] }}):
+  </p>
+  <p>{{ comment['comment'] | show_lines }}</p>
+  {% if comment['username'] == session.username %}
+  <p>
+    <a href="/edit_comment/{{ comment['id'] }}">Edit</a> |
+    <a href="/confirm_delete_comment/{{ comment['id'] }}">Delete</a>
+  </p>
+  {% endif %}
+  <hr />
+  {% endfor %}
+
+  <form action="/new_comment" method="post" class="comment-form">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="hidden" name="review_id" value="{{ book_review[0]['id'] }}" />
+    <label>Comment:</label><br>
+    <textarea name="comment" required></textarea><br>
+    <button type="submit">Add comment</button>
+  </form>
 </body>
 
 </html>

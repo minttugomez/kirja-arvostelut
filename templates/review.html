@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ book_review[0]['title'] }}</title>
+</head>
+
+<body>
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+  <p>
+    <a href="/">Back to main page</a>
+  </p>
+
+  <h1>{{ book_review[0]['author'] }} - {{ book_review[0]['title'] }}</h1>
+  <p>
+    Reviewed by
+    <a href="/user/{{ book_review[0]['user_id'] }}">{{ book_review[0]['username'] }}</a>
+    ({{ book_review[0]['created_at'][:10] }})
+  </p>
+  {% for title in review_classes %}
+  <p>{{ title }}: {{ review_classes[title] | join(', ') }}</p>
+  {% endfor %}
+  <hr />
+  <p>{{ book_review[0]['review'] | show_lines }}</p>
+  <hr />
+</body>
+
+</html>

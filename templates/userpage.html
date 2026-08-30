@@ -37,8 +37,8 @@
     <a href="/user/{{ book_review['user_id'] }}">{{ book_review['username'] }}</a>
     ({{ book_review['created_at'][:10] }}):
   </p>
-  <p><b>{{ book_review['author'] }} - {{ book_review['title'] }}</b></p>
-  <p>{{ book_review['review'] | show_lines }}</p>
+  <p><b><a href="/review/{{ book_review['id'] }}">{{ book_review['author'] }} - {{ book_review['title'] }}</a></b></p>
+  <p>{{ book_review['review'] | show_preview }}</p>
   {% if is_owner %}
   <p>
     <a href="/edit/{{ book_review['id'] }}">Edit</a> |

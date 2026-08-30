@@ -122,6 +122,20 @@ def user_page(user_id):
     )
 
 
+@app.route("/review/<int:review_id>")
+def review_page(review_id):
+    if "username" not in session:
+        return redirect("/")
+    book_review = get_review_by_id(review_id)
+    if not book_review:
+        abort(404)
+    return render_template(
+        "review.html",
+        book_review=book_review,
+        review_classes=get_review_classes(review_id),
+    )
+
+
 @app.route("/edit/<int:review_id>")
 def edit(review_id):
     book_review = get_review_by_id(review_id)
@@ -248,3 +262,16 @@ def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
+
+
+@app.template_filter()
+def show_preview(content):
+    lines = content.split("\n")[:3]
+    preview = "\n".join(lines)
+    truncated = len(preview) < len(content)
+    if len(preview) > 300:
+        preview = preview[:300]
+        truncated = True
+    if truncated:
+        preview = preview.rstrip() + " ..."
+    return show_lines(preview)

@@ -385,7 +385,7 @@ def add():
         flash("Review added successfully!")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
-    return redirect(f"/user/{user_id}")
+    return redirect("/")
 
 
 @app.route("/update/<int:review_id>", methods=["POST"])

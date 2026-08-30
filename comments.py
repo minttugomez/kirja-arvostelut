@@ -14,7 +14,8 @@ def get_comments(review_id):
 
 def get_comment(comment_id):
     sql = """
-    SELECT comments.*, users.username
+    SELECT comments.id, comments.review_id, comments.user_id,
+           comments.comment, comments.created_at, users.username
     FROM comments
     JOIN users ON comments.user_id = users.id
     WHERE comments.id = ?"""

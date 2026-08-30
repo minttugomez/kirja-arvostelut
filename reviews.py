@@ -3,7 +3,9 @@ import db
 
 def get_all_reviews():
     sql = """
-    SELECT book_reviews.*, users.username
+    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
+           book_reviews.author, book_reviews.review, book_reviews.created_at,
+           users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
     ORDER BY book_reviews.id DESC"""
@@ -26,7 +28,9 @@ def search(query, genre):
         params.append(genre)
 
     sql = """
-    SELECT book_reviews.*, users.username
+    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
+           book_reviews.author, book_reviews.review, book_reviews.created_at,
+           users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id"""
     if where:
@@ -37,7 +41,9 @@ def search(query, genre):
 
 def get_reviews_by_user(user_id):
     sql = """
-    SELECT book_reviews.*, users.username
+    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
+           book_reviews.author, book_reviews.review, book_reviews.created_at,
+           users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
     WHERE book_reviews.user_id = ?
@@ -57,7 +63,9 @@ def get_user_stats(user_id):
 
 def get_review_by_id(review_id):
     sql = """
-    SELECT book_reviews.*, users.username
+    SELECT book_reviews.id, book_reviews.user_id, book_reviews.title,
+           book_reviews.author, book_reviews.review, book_reviews.created_at,
+           users.username
     FROM book_reviews
     JOIN users ON book_reviews.user_id = users.id
     WHERE book_reviews.id = ?

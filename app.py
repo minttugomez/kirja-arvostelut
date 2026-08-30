@@ -20,6 +20,10 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 
 
+def current_user_id():
+    return get_user_id(session["username"])
+
+
 @app.errorhandler(403)
 def forbidden(error):
     return redirect("/")
@@ -29,7 +33,10 @@ def forbidden(error):
 def index():
     query = request.args.get("query")
     book_reviews = search(query) if query else get_all_reviews() or []
-    return render_template("index.html", query=query, book_reviews=book_reviews)
+    user_id = current_user_id() if "username" in session else None
+    return render_template(
+        "index.html", query=query, book_reviews=book_reviews, user_id=user_id
+    )
 
 
 @app.route("/register")
@@ -41,14 +48,7 @@ def register():
 def new_review():
     if "username" not in session:
         return redirect("/")
-    return render_template("newreview.html")
-
-
-@app.route("/your_page")
-def your_page():
-    if "username" not in session:
-        return redirect("/")
-    return redirect(f"/user/{get_user_id(session['username'])}")
+    return render_template("newreview.html", user_id=current_user_id())
 
 
 @app.route("/user/<int:user_id>")
@@ -62,7 +62,7 @@ def user_page(user_id):
     stats = get_user_stats(user_id)
     is_owner = user["username"] == session["username"]
     return render_template(
-        "yourpage.html",
+        "userpage.html",
         user=user,
         book_reviews=book_reviews,
         stats=stats,
@@ -77,7 +77,7 @@ def edit(review_id):
         return redirect("/")
     if not book_review:
         flash("Review not found")
-        return redirect("/your_page")
+        return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
         abort(403)
     return render_template("editreview.html", book_review=book_review)
@@ -90,7 +90,7 @@ def confirm_delete(review_id):
         return redirect("/")
     if not book_review:
         flash("Review not found")
-        return redirect("/your_page")
+        return redirect(f"/user/{current_user_id()}")
     if book_review[0]["username"] != session["username"]:
         abort(403)
     return render_template("confirmdelete.html", book_review=book_review)
@@ -136,7 +136,7 @@ def add():
     try:
         add_review(user_id, title, author, review)
         flash("Review added successfully!")
-        return redirect("/your_page")
+        return redirect(f"/user/{user_id}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not added")
 
@@ -159,7 +159,7 @@ def update(review_id):
     try:
         update_review(review_id, title, author, review)
         flash("Review updated successfully!")
-        return redirect("/your_page")
+        return redirect(f"/user/{book_review[0]['user_id']}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not updated")
 
@@ -178,7 +178,7 @@ def delete(review_id):
     try:
         delete_review(review_id)
         flash("Review deleted successfully!")
-        return redirect("/your_page")
+        return redirect(f"/user/{book_review[0]['user_id']}")
     except sqlite3.DatabaseError:
         flash("ERROR: Something went wrong. Review not deleted")
 

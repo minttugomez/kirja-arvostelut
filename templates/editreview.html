@@ -22,7 +22,7 @@
     <textarea id="review" name="review" required>{{ book_review[0]['review'] }}</textarea><br>
     <button type="submit">Update Review</button>
   </form>
-  <br/><a href="/your_page">Cancel</a>
+  <br/><a href="/user/{{ book_review[0]['user_id'] }}">Cancel</a>
 
 </body>
 

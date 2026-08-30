@@ -10,15 +10,29 @@ def get_all_reviews():
     return db.query(sql)
 
 
-def search(query):
+def search(query, genre):
+    where = []
+    params = []
+    if query:
+        where.append(
+            "(book_reviews.title LIKE ? OR book_reviews.author LIKE ?)"
+        )
+        params += ["%" + query + "%", "%" + query + "%"]
+    if genre:
+        where.append(
+            "book_reviews.id IN "
+            "(SELECT review_id FROM review_classes WHERE value = ?)"
+        )
+        params.append(genre)
+
     sql = """
     SELECT book_reviews.*, users.username
     FROM book_reviews
-    JOIN users ON book_reviews.user_id = users.id
-    WHERE title LIKE ? OR author LIKE ?
-    ORDER BY book_reviews.id DESC"""
-    queryphrase = "%" + query + "%"
-    return db.query(sql, [queryphrase, queryphrase])
+    JOIN users ON book_reviews.user_id = users.id"""
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += " ORDER BY book_reviews.id DESC"
+    return db.query(sql, params)
 
 
 def get_reviews_by_user(user_id):

@@ -7,11 +7,16 @@
 <form action="/" method="get">
   <p>
     Author or title:
-    {% if query %}
-    <input type="text" name="query" value="{{ query }}" />
-    {% else %}
-    <input type="text" name="query" />
-    {% endif %}
+    <input type="text" name="query" value="{{ query or '' }}" />
+  </p>
+  <p>
+    Genre:
+    <select name="genre">
+      <option value="">All genres</option>
+      {% for value in genres %}
+      <option value="{{ value }}" {% if value == genre %}selected{% endif %}>{{ value }}</option>
+      {% endfor %}
+    </select>
   </p>
   <input type="submit" value="Search" />
 </form>

@@ -79,10 +79,19 @@ def not_found(error):
 @app.route("/")
 def index():
     query = request.args.get("query")
-    book_reviews = search(query) if query else get_all_reviews() or []
+    genre = request.args.get("genre")
+    if query or genre:
+        book_reviews = search(query, genre)
+    else:
+        book_reviews = get_all_reviews() or []
     user_id = current_user_id() if "username" in session else None
     return render_template(
-        "index.html", query=query, book_reviews=book_reviews, user_id=user_id
+        "index.html",
+        query=query,
+        genre=genre,
+        genres=get_all_classes().get("Genre", []),
+        book_reviews=book_reviews,
+        user_id=user_id,
     )
 
 
